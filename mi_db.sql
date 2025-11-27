@@ -27,8 +27,8 @@ CREATE TABLE centros_formacion (
 );
 
 CREATE TABLE municipio ( 
-    id_municipio INT PRIMARY KEY,
-    nom_municipio VARCHAR(80),
+    id_municipio VARCHAR(20) PRIMARY KEY,
+    nom_municipio VARCHAR(80)
 );
 
 CREATE TABLE estrategia (
@@ -51,7 +51,7 @@ CREATE TABLE instituciones (
     nit_institucion VARCHAR(20) PRIMARY KEY,
     nombre_institucion VARCHAR(100),
     direccion VARCHAR(100),
-    id_municipio INT UNSIGNED,
+    id_municipio VARCHAR(20),
     cant_convenios TINYINT,
     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
 );
@@ -120,7 +120,7 @@ CREATE TABLE grupos (
     estado_curso VARCHAR(80),
     fecha_inicio DATE,
     fecha_fin DATE,
-    id_municipio CHAR(5),
+    id_municipio VARCHAR(20),
     cod_estrategia CHAR(5),
     nombre_responsable VARCHAR(150),
     cupo_asignado SMALLINT UNSIGNED,
@@ -146,7 +146,7 @@ CREATE TABLE egresados (
     estado_certificado VARCHAR(10),
     tipo_documento VARCHAR(15),
     nombre_egresado VARCHAR(100),
-    lugar_recidencia CHAR(5),
+    lugar_recidencia VARCHAR(20),
     correo VARCHAR(100),
     tel_principal VARCHAR(15),
     tel_alterno VARCHAR(15),
