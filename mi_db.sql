@@ -27,10 +27,8 @@ CREATE TABLE centros_formacion (
 );
 
 CREATE TABLE municipio ( 
-    id_municipio INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_municipio INT PRIMARY KEY,
     nom_municipio VARCHAR(80),
-    codigo_interno VARCHAR(20),
-    codigo_dane VARCHAR(20)
 );
 
 CREATE TABLE estrategia (
@@ -157,41 +155,19 @@ CREATE TABLE egresados (
     FOREIGN KEY (lugar_recidencia) REFERENCES municipio(id_municipio)
 );
 
-CREATE TABLE municipio ( 
-    id_municipio INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    nom_municipio VARCHAR(80),
-    codigo_interno VARCHAR(20),
-    codigo_dane VARCHAR(20)
-);
+INSERT INTO municipio (id_municipio,nom_municipio) VALUES
+('57066001','Pereira'),
+('57066045','Apía'),
+('57066075','Balboa'),
+('57066088','Belen de Umbria'),
+('57066170','Dosquebradas'),
+('57066320','Guática'),
+('57066383','La Celia'),
+('57066388','La Virginia'),
+('57066430','Marsella'),
+('57066460','Mistrató'),
+('57066511','Pueblo Rico'),
+('57066535','Quinchia'),
+('57066685','Santa Rosa de Cabal'),
+('57066740','Santuario'),
 
-CREATE TABLE instituciones (
-    nit_institucion VARCHAR(20) PRIMARY KEY,
-    nombre_institucion VARCHAR(100),
-    direccion VARCHAR(100),
-    id_municipio INT UNSIGNED,
-    cant_convenios TINYINT,
-    FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio)
-);
-
-INSERT INTO municipio (nom_municipio,codigo_interno,codigo_dane,codigo_inv) VALUES
-('1','Pereira','001','57066001','p-001'),
-('Apía','045','660045'),
-('Balboa','075','66075'),
-('Belen de Umbria','088','66088'),
-('Dosquebradas','170','66170'),
-('Guática','320','66320'),
-('La Celia','383','66383'),
-('La Virginia','388','66388'),
-('Marsella','430','66430'),
-('Mistrató','460','66460'),
-('Pueblo Rico','511','66511'),
-('Quinchia','533','66535'),
-('Santa Rosa de Cabal','685','66685'),
-('Santuario','740','66740'),
-
-
-
-insert into egresado_convenio (documento, num_proceso) values
-('1234567890', 'PROC-001'),
-('0987654321', 'PROC-002'),
-('1122334455', 'PROC-003');
