@@ -13,11 +13,11 @@ router = APIRouter()
 def create_user(
     user: CrearUsuario, 
     db: Session = Depends(get_db),
-    user_token: RetornoUsuario = Depends(get_current_user)
+    # user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
-        if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+        # if user_token.id_rol != 1:
+        #     raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
         
         crear = crud_users.create_user(db, user)
         if crear:
@@ -30,8 +30,12 @@ def create_user(
 
 
 @router.get("/obtener-por-id/{id_usuario}", status_code=status.HTTP_200_OK, response_model=RetornoUsuario)
-def get_by_id(id_usuario:int, db: Session = Depends(get_db)):
+def get_by_id(id_usuario:int, db: Session = Depends(get_db),user_token: RetornoUsuario = Depends(get_current_user)):
+    
     try:
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+        
         user = crud_users.get_user_by_id(db, id_usuario)
         if user is None:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
