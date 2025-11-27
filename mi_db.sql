@@ -169,7 +169,7 @@ INSERT INTO municipio (id_municipio,nom_municipio) VALUES
 ('57066511','Pueblo Rico'),
 ('57066535','Quinchia'),
 ('57066685','Santa Rosa de Cabal'),
-('57066740','Santuario'),
+('57066740','Santuario')
 
 INSERT INTO rol (nombre_rol) VALUES
 ('Admin'),
@@ -184,3 +184,5 @@ INSERT INTO egresado_convenio (documento, num_proceso) VALUES
 INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_municipio, cant_convenios) VALUES
 ('891.480.035-9','Universidad Tecnológica de Pereira','Carrera 27 N° 10-02, Barrio Los Álamos','57066001',2),
 ('891408261-1','Universidad Católica de Pereira','Carrera 21 N.º 49-95 Av. de las Américas','57066001',1);
+
+update instituciones set nit_institucion = '891480035-9' where nit_institucion = '891.480.035-9';

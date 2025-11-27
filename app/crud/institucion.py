@@ -26,16 +26,22 @@ def create_institucion(db: Session, institucion: InstitucionBase) -> Optional[bo
         logger.error(f"Error al crear la institucción :{e}")
         raise Exception("Error de base de datos al crear una institución")
 
-def get_institucion_by_nit(db: Session, nit_institucion:int):
+def get_institucion_by_nit(db: Session, nit_institucion:str):
     try:
+        ni_institucion = f"%{nit_institucion}%"
         query = text("""
-            SELECT instituciones.nit_institucion, instituciones.nombre_institucion,
-                    instituciones.direccion, instituciones.id_municipio, instituciones.cant_convenios, municipio.nom_municipio
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
             FROM instituciones
             INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
-            WHERE instituciones.nit_institucion = :registro_institucion
+            WHERE UPPER(instituciones.nit_institucion) LIKE UPPER(:nit_intitu)
+            ORDER BY instituciones.nombre_institucion
         """)
-        result = db.execute(query, {"registro_institucion": nit_institucion}).mappings().first()
+        result = db.execute(query, {"nit_intitu": ni_institucion}).mappings().all()
         return result
     except SQLAlchemyError as e:
         logger.error(f"Error al buscar institución por nit: {e}")
@@ -43,20 +49,27 @@ def get_institucion_by_nit(db: Session, nit_institucion:int):
     
 def get_institucion_by_name(db: Session, name_institucion:str):
     try:
+        # buscar por patrón (ej. una letra) usando LIKE, se añade el % alrededor del parámetro
+        name_institucion = f"%{name_institucion}%"
         query = text("""
-            SELECT instituciones.nit_institucion, instituciones.nombre_institucion,
-                    instituciones.direccion, instituciones.id_municipio, instituciones.cant_convenios, municipio.nom_municipio
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
             FROM instituciones
             INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
-            WHERE instituciones.nit_institucion = :nom_institucion
+            WHERE UPPER(instituciones.nombre_institucion) LIKE UPPER(:nom_institucion)
+            ORDER BY instituciones.nombre_institucion
         """)
-        result = db.execute(query, {"nom_institucion": name_institucion}).mappings().first()
+        result = db.execute(query, {"nom_institucion": name_institucion}).mappings().all()
         return result
     except SQLAlchemyError as e:
         logger.error(f"Error al buscar institución por nombre: {e}")
         raise Exception("Error de la base de datos al buscar institución")
 
-def institucion_update(db: Session, nit_institucion:int, update_institucion: EditarInstitucion) -> bool:
+def institucion_update(db: Session, nit_institucion:str, update_institucion: EditarInstitucion) -> bool:
     try:
         fields = update_institucion.model_dump(exclude_unset=True)
         if not fields:
@@ -72,7 +85,7 @@ def institucion_update(db: Session, nit_institucion:int, update_institucion: Edi
         logger.error(f"Error al editar institución: {e}")
         raise Exception("Error de base de datos al actualizar institución")
 
-def institucion_delete(db: Session, nit:int):
+def institucion_delete(db: Session, nit:str):
     try:
         query = text("""
             DELETE FROM instituciones

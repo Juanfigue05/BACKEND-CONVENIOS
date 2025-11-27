@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.institucion import InstitucionBase, RetornarInstitucion, EditarInstitucion
 from sqlalchemy.orm import Session
@@ -18,8 +19,8 @@ def create_institucion(institucion: InstitucionBase, db: Session = Depends(get_d
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener por nit", status_code=status.HTTP_200_OK, response_model=RetornarInstitucion)
-def get_by_nit(nit_institucion: int, db: Session = Depends(get_db)):
+@router.get("/obtener por nit", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
+def get_by_nit(nit_institucion: str, db: Session = Depends(get_db)):
     try:
         instituciones = crud_instituciones.get_institucion_by_nit(db, nit_institucion)
         if instituciones is None:
@@ -28,8 +29,8 @@ def get_by_nit(nit_institucion: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nombre", status_code=status.HTTP_200_OK, response_model=RetornarInstitucion)
-def get_by_name(nombre_institucion:str, db: Session = Depends(get_db)):
+@router.get("/obtener por nombre", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
+async def get_by_name(nombre_institucion:str, db: Session = Depends(get_db)):
     try:
         institucion = crud_instituciones.get_institucion_by_name(db, nombre_institucion)
         if institucion is None:
@@ -39,7 +40,7 @@ def get_by_name(nombre_institucion:str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.put("/editar/{nit_institucion}")
-def update_institucion(nit_institucion: int, institucion: EditarInstitucion, db: Session = Depends(get_db)):
+def update_institucion(nit_institucion: str, institucion: EditarInstitucion, db: Session = Depends(get_db)):
     try:
         success = crud_instituciones.institucion_update(db, nit_institucion, institucion)
         if not success:
