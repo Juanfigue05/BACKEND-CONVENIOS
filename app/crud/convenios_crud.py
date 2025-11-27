@@ -36,18 +36,19 @@ def crear_convenio(db: Session, convenio: CrearConvenio) -> Optional[bool]:
         logger.error(f"Error al crear el convenio: {e}")
         raise Exception("Error de base de datos al crear el convenio")
 
-def obtener_convenios_by_id(db: Session, id_conv:int):
+def obtener_convenios_by_num_convenio(db: Session, id_conv:str):
     try:
+        filtro = f"%{id_conv}%"
         query = text("""
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
                     convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
             FROM convenios
-            WHERE convenios.id_convenio = :id_convenio
+            WHERE convenios.num_convenio = :id_convenio
         """)
 
-        result = db.execute(query, {"id_convenio": id_conv}).mappings().first()
+        result = db.execute(query, {"id_convenio": filtro}).mappings().first()
         return result
     
     except SQLAlchemyError as e:

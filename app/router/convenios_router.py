@@ -8,7 +8,7 @@ from app.crud import convenios_crud as crud_convenios
 router = APIRouter()
 
 @router.post("/registrar", status_code=status.HTTP_201_CREATED)
-def create_institucion(convenio: ConvenioBase, db: Session = Depends(get_db)):
+def create_convenio(convenio: ConvenioBase, db: Session = Depends(get_db)):
     try:
         crear = crud_convenios.crear_convenio(db, convenio)
         if crear:
@@ -18,10 +18,10 @@ def create_institucion(convenio: ConvenioBase, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener por id", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
-def get_by_id(id_convenio: int, db: Session = Depends(get_db)):
+@router.get("/obtener por numero convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+def get_by_id(num_convenio: str, db: Session = Depends(get_db)):
     try:
-        convenios = crud_convenios.obtener_convenios_by_id(db, id_convenio)
+        convenios = crud_convenios.obtener_convenios_by_num_convenio(db, num_convenio)
         if convenios is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Convenio no encontrado")
         return convenios

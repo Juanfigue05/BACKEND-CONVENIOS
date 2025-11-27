@@ -186,3 +186,7 @@ INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_mu
 ('891408261-1','Universidad Católica de Pereira','Carrera 21 N.º 49-95 Av. de las Américas','57066001',1);
 
 update instituciones set nit_institucion = '891480035-9' where nit_institucion = '891.480.035-9';
+
+INSERT INTO egresado_convenio (documento, num_proceso) VALUES
+('3344556677','PROC-2023-004'),
+('4455667788','PROC-2023-005');
