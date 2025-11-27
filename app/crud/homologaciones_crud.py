@@ -99,7 +99,7 @@ def eliminar_homologacion(db: Session, id_homolog:int):
             DELETE FROM homologacion
             WHERE homologacion.id_homologacion = :homologacion
         """)
-        db.execute(db, {"homologacion":id_homolog})
+        db.execute(query, {"homologacion":id_homolog})
         db.commit()
         return True
     except SQLAlchemyError as e:

@@ -91,7 +91,7 @@ def institucion_delete(db: Session, nit:str):
             DELETE FROM instituciones
             WHERE instituciones.nit_institucion = :el_nit
         """)
-        db.execute(db, {"el_nit":nit})
+        db.execute(query, {"el_nit":nit})
         db.commit()
         return True
     except SQLAlchemyError as e:

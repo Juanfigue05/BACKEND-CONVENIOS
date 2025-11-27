@@ -26,7 +26,6 @@ class ConvenioBase(BaseModel):
     tipo_convenio_sena: str	= Field(max_length=50)
     persona_apoyo_fpi: str= Field(max_length=80)
     enlace_evidencias: str= Field(max_length=100)
-    fecha_vigencia: datetime
 
 class CrearConvenio(ConvenioBase):
     pass
@@ -54,7 +53,6 @@ class EditarConvenio(BaseModel):
     tipo_convenio_sena: Optional[str]	= None
     persona_apoyo_fpi: Optional[str]= None
     enlace_evidencias: Optional[str]= None
-    fecha_vigencia: Optional[datetime] = None
 
 class RetornoConvenio(ConvenioBase):
     id_convenio: int

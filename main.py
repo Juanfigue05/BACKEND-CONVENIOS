@@ -7,6 +7,8 @@ from app.router import convenios_router as convenios
 from app.router import auth
 from app.router import institucion
 from app.router import homologaciones_router as homologaciones
+from app.router import municipio
+from app.router import homologaciones_router as homologaciones
 
 app = FastAPI()
 
@@ -16,6 +18,7 @@ app.include_router(users.router, prefix="/usuario", tags=["Servicios usuarios"])
 app.include_router(cargar.router, prefix="/cargar", tags=["Servicios de carga de archivos"])
 app.include_router(convenios.router, prefix="/convenios", tags=["Servicios de convenios"])
 app.include_router(institucion.router, prefix="/institucion", tags=["Servicios de instituciones"])
+app.include_router(municipio.router, prefix="/municipio", tags=["Servicios de municipios"])
 app.include_router(homologaciones.router, prefix="/homologaciones", tags=["Servicios de homologaciones"]) 
 
 

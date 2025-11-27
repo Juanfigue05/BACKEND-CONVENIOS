@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -53,17 +54,22 @@ def get_by_email(correo:str, db: Session = Depends(get_db)):
         return user
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.delete("/eliminar-por-id/{id_usuario}", status_code=status.HTTP_200_OK)
-def delete_by_id(id_usuario:int, db: Session = Depends(get_db)):
+    
+@router.get("/obtener-todos-secure", status_code=status.HTTP_200_OK, response_model=List[RetornoUsuario])
+def get_all_s(
+    db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
     try:
-        user = crud_users.user_delete(db, id_usuario)
-        if user:
-            return {"message": "Usuario eliminado correctamente"}
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+        
+        users = crud_users.get_all_user(db)
+        if users is None:
+            raise HTTPException(status_code=404, detail="Usuarios no encontrados")
+        return users
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.put("/editar/{user_id}")
 def update_user(user_id: int, user: EditarUsuario, db: Session = Depends(get_db)):
@@ -74,7 +80,6 @@ def update_user(user_id: int, user: EditarUsuario, db: Session = Depends(get_db)
         return {"message": "Usuario actualizado correctamente"}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @router.put("/editar-contrasenia")
 def update_password(user: EditarPass, db: Session = Depends(get_db)):
@@ -87,5 +92,14 @@ def update_password(user: EditarPass, db: Session = Depends(get_db)):
         if not success:
             raise HTTPException(status_code=400, detail="No se pudo actualizar la contraseña del usuario")
         return {"message": "Contraseña actualizada correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.delete("/eliminar-por-id/{id_usuario}", status_code=status.HTTP_200_OK)
+def delete_by_id(id_usuario:int, db: Session = Depends(get_db)):
+    try:
+        user = crud_users.user_delete(db, id_usuario)
+        if user:
+            return {"message": "Usuario eliminado correctamente"}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))

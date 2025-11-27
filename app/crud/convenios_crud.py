@@ -19,12 +19,12 @@ def crear_convenio(db: Session, convenio: CrearConvenio) -> Optional[bool]:
                 tipo_convenio,num_convenio,nit_institucion,num_proceso,nombre_institucion,
                 estado_convenio,objetivo_convenio, tipo_proceso,fecha_firma,fecha_inicio,duracion_convenio,
                      plazo_ejecucion, prorroga, plazo_prorroga, duracion_total, fecha_publicacion_proceso,enlace_secop,
-                     supervisor, precio_estimado, tipo_convenio_sena, persona_apoyo_fpi, enlace_evidencias, fecha_vigencia
+                     supervisor, precio_estimado, tipo_convenio_sena, persona_apoyo_fpi, enlace_evidencias
             ) VALUES (
                 :tipo_convenio, :num_convenio, :nit_institucion, :num_proceso, :nombre_institucion,
                 :estado_convenio, :objetivo_convenio, :tipo_proceso, :fecha_firma, :fecha_inicio, :duracion_convenio,
                      :plazo_ejecucion, :prorroga, :plazo_prorroga, :duracion_total, :fecha_publicacion_proceso, :enlace_secop,
-                     :supervisor, :precio_estimado, :tipo_convenio_sena, :persona_apoyo_fpi, :enlace_evidencias, :fecha_vigencia
+                     :supervisor, :precio_estimado, :tipo_convenio_sena, :persona_apoyo_fpi, :enlace_evidencias
             )
         """)
         db.execute(query, dataconvenios)
@@ -43,7 +43,7 @@ def obtener_convenios_by_num_convenio(db: Session, id_conv:str):
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
-                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
+                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias
             FROM convenios
             WHERE convenios.num_convenio = :id_convenio
         """)
@@ -62,7 +62,7 @@ def obtener_convenios_by_tipo_convenio(db: Session, tipo_conve:str):
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
-                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
+                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias
             FROM convenios
             WHERE convenios.tipo_convenio = :tipo_conve
         """)
@@ -81,7 +81,7 @@ def obtener_convenios_by_nit_institucion(db: Session, nit_provee:str):
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
-                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
+                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias
             FROM convenios
             WHERE convenios.nit_institucion = :nit_proveed
         """)
@@ -100,7 +100,7 @@ def obtener_convenios_by_estado_convenio(db: Session, estado_conve:str):
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
-                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
+                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias
             FROM convenios
             WHERE convenios.estado_convenio = :convenio_estado
         """)
@@ -111,6 +111,7 @@ def obtener_convenios_by_estado_convenio(db: Session, estado_conve:str):
     except SQLAlchemyError as e:
         logger.error(f"Error al bucar los convenios por estado: {e}")
         raise Exception("Error de base de datos al buscar los convenios por estado")
+
 
 def eliminar_convenio(db: Session, id_convenio:int):
     try:
@@ -147,13 +148,14 @@ def update_convenios(db: Session, id_conve: int, convenios_update: EditarConveni
         logger.error(f"Error al actualizar el convenio: {e}")
         raise Exception("Error de base de datos al actualizar el convenio")
 
+
 def obtener_convenios_by_nit_security(db: Session, id_convenio_seguro:int):
     try:
         query = text("""
             SELECT  convenios.id_convenio, convenios.tipo_convenio, convenios.num_convenio, convenios.nit_institucion, convenios.num_proceso, convenios.nombre_institucion,
                     convenios.estado_convenio, convenios.objetivo_convenio, convenios.tipo_proceso, convenios.fecha_firma, convenios.fecha_inicio, convenios.duracion_convenio,
                     convenios.plazo_ejecucion, convenios.prorroga, convenios.plazo_prorroga, convenios.duracion_total, convenios.fecha_publicacion_proceso, convenios.enlace_secop,
-                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias, convenios.fecha_vigencia
+                    convenios.supervisor, convenios.precio_estimado, convenios.tipo_convenio_sena, convenios.persona_apoyo_fpi, convenios.enlace_evidencias
             FROM convenios
             WHERE convenios.id_convenio = :convenio_seguro
         """)

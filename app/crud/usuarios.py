@@ -73,25 +73,23 @@ def get_user_by_email(db: Session, un_correo:str):
     except SQLAlchemyError as e:
         logger.error(f"Error al bucar usuario por email: {e}")
         raise Exception("Error de base de datos al buscar el usuario por correo")
-
-
-def user_delete(db: Session, id:int):
+    
+def get_all_user(db: Session):
     try:
         query = text("""
-            DELETE FROM usuario
-            WHERE usuario.id_usuario = :el_id
+            SELECT usuario.id_usuario, usuario.nombre_completo, 
+                usuario.num_documento, usuario.correo, usuario.id_rol, 
+                usuario.estado, rol.nombre_rol
+            FROM usuario
+            INNER JOIN rol ON usuario.id_rol = rol.id_rol
         """)
 
-        db.execute(query, {"el_id": id})
-        db.commit()
-        
-        return True
-    
-    except SQLAlchemyError as e:
-        db.rollback()
-        logger.error(f"Error al eliminar usuario por id: {e}")
-        raise Exception("Error de base de datos al eliminar el usuario")
+        result = db.execute(query).mappings().all()
+        return result
 
+    except SQLAlchemyError as e:
+        logger.error(f"Error al bucar usuario por id: {e}")
+        raise Exception("Error de base de datos al buscar el usuario")
 
 def update_user(db: Session, user_id: int, user_update: EditarUsuario) -> bool:
     try:
@@ -173,4 +171,19 @@ def get_user_by_email_security(db: Session, un_correo:str):
         logger.error(f"Error al bucar usuario por email: {e}")
         raise Exception("Error de base de datos al buscar el usuario por correo")
 
+def user_delete(db: Session, id:int):
+    try:
+        query = text("""
+            DELETE FROM usuario
+            WHERE usuario.id_usuario = :el_id
+        """)
 
+        db.execute(query, {"el_id": id})
+        db.commit()
+        
+        return True
+    
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Error al eliminar usuario por id: {e}")
+        raise Exception("Error de base de datos al eliminar el usuario")

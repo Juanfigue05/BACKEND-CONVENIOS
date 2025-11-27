@@ -76,39 +76,6 @@ CREATE TABLE homologacion (
     FOREIGN KEY (nit_institucion_destino) REFERENCES instituciones(nit_institucion)
 );
 
-CREATE TABLE egresado_convenio (
-    documento VARCHAR(20) PRIMARY KEY,
-    num_proceso VARCHAR(20) UNIQUE
-);
-
-CREATE TABLE convenios (
-    id_convenio INT AUTO_INCREMENT PRIMARY KEY,
-    tipo_convenio VARCHAR(50),
-    num_convenio VARCHAR(50),
-    nit_institucion VARCHAR(20),
-    num_proceso VARCHAR(20),
-    nombre_institucion VARCHAR(100),
-    estado_convenio VARCHAR(20),
-    objetivo_convenio TEXT,
-    tipo_proceso VARCHAR(50),
-    fecha_firma DATE,
-    fecha_inicio DATE,
-    duracion_convenio VARCHAR(20),
-    plazo_ejecucion DATE,
-    prorroga DATE,
-    plazo_prorroga DATE,
-    duracion_total VARCHAR(20),
-    fecha_publicacion_proceso DATE,
-    enlace_secop VARCHAR(100),
-    supervisor VARCHAR(80),
-    precio_estimado DECIMAL(15,2),
-    tipo_convenio_sena VARCHAR(50),
-    persona_apoyo_fpi VARCHAR(80),
-    enlace_evidencias VARCHAR(100),
-    fecha_vigencia DATE,
-    FOREIGN KEY (num_proceso) REFERENCES egresado_convenio(num_proceso),
-    FOREIGN KEY (nit_institucion) REFERENCES instituciones(nit_institucion)
-);
 
 CREATE TABLE grupos (
     ficha VARCHAR(15) PRIMARY KEY,
@@ -150,9 +117,44 @@ CREATE TABLE egresados (
     correo VARCHAR(100),
     tel_principal VARCHAR(15),
     tel_alterno VARCHAR(15),
-    FOREIGN KEY (documento) REFERENCES egresado_convenio(documento),
     FOREIGN KEY (ficha) REFERENCES grupos(ficha),
     FOREIGN KEY (lugar_recidencia) REFERENCES municipio(id_municipio)
+);
+
+CREATE TABLE convenios (
+    id_convenio INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_convenio VARCHAR(50),
+    num_convenio VARCHAR(50),
+    nit_institucion VARCHAR(20),
+    num_proceso VARCHAR(50),
+    nombre_institucion VARCHAR(100),
+    estado_convenio VARCHAR(20),
+    objetivo_convenio TEXT,
+    tipo_proceso VARCHAR(50),
+    fecha_firma DATE,
+    fecha_inicio DATE,
+    duracion_convenio VARCHAR(20),
+    plazo_ejecucion DATE,
+    prorroga DATE,
+    plazo_prorroga DATE,
+    duracion_total VARCHAR(20),
+    fecha_publicacion_proceso DATE,
+    enlace_secop VARCHAR(100),
+    supervisor VARCHAR(80),
+    precio_estimado DECIMAL(15,2),
+    tipo_convenio_sena VARCHAR(50),
+    persona_apoyo_fpi VARCHAR(80),
+    enlace_evidencias VARCHAR(100),
+    fecha_vigencia DATE,
+    FOREIGN KEY (nit_institucion) REFERENCES instituciones(nit_institucion)
+);
+
+CREATE TABLE egresado_convenio (
+    id_relacion INT AUTO_INCREMENT PRIMARY KEY,
+    documento VARCHAR(20),
+    id_convenio VARCHAR(50),
+    FOREIGN KEY (documento) REFERENCES egresados(documento),
+    FOREIGN KEY (num_proceso) REFERENCES convenios(id_convenio)
 );
 
 INSERT INTO municipio (id_municipio,nom_municipio) VALUES
@@ -182,7 +184,7 @@ INSERT INTO egresado_convenio (documento, num_proceso) VALUES
 ('2233445566','PROC-2023-003');
 
 INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_municipio, cant_convenios) VALUES
-('891.480.035-9','Universidad Tecnológica de Pereira','Carrera 27 N° 10-02, Barrio Los Álamos','57066001',2),
+('891480035-9','Universidad Tecnológica de Pereira','Carrera 27 N° 10-02, Barrio Los Álamos','57066001',2),
 ('891408261-1','Universidad Católica de Pereira','Carrera 21 N.º 49-95 Av. de las Américas','57066001',1);
 
 update instituciones set nit_institucion = '891480035-9' where nit_institucion = '891.480.035-9';

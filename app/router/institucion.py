@@ -48,3 +48,13 @@ def update_institucion(nit_institucion: str, institucion: EditarInstitucion, db:
         return {"message": "Institución actualizada correctamente"}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.delete("eliminar-por-nit/{nit_institucion}")
+def delete_institucion(nit_institucion: str, db: Session = Depends(get_db)):
+    try: 
+        institucion = crud_instituciones.institucion_delete(db, nit_institucion)
+        if institucion:
+            return {"message": "Institución eliminada correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    

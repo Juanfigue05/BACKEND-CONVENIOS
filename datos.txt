@@ -61,7 +61,7 @@ pip install pymysql
 
 pip install pydantic[email]
 
-
+pip install openpyxl
 
 
 

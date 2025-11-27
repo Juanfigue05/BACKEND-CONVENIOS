@@ -8,7 +8,7 @@ from core.database import get_db
 
 router = APIRouter()
 
-@router.post("/upload-excel-convenios/")
+@router.post("/upload-excel-instituciones/")
 async def upload_excel(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
@@ -17,7 +17,7 @@ async def upload_excel(
     df = pd.read_excel(
         BytesIO(contents),
         engine="openpyxl",
-        usecols=["No","TIPO", "NUMERO_CONVENIO", "NIT_PROVEEDOR", "NUMERO_PROCESO", "PROVEEDOR", "ESTADO", "OBJETIVO_CONVENIO", "TIPO_PROCESO", "FECHA_FIRMA_CONVENIO", "FECHA_INICIO_EJECUCION", "DURACION_CONVENIO", "PLAZO_EJECUCION", "PRORROGA", "PLAZO_PRORROGA", "DURACION_TOTAL","FECHA_PUBLICACION_PROCESO","ENLACE_SECOP","SUPERVISOR","PRECIO_ESTIMADO","TIPO_CONVENIO","PERSONA_APOYO_FPI","ENLACE_EVIDENCIAS"],  # Nombres reales
+        usecols=["TIPO", "NUMERO_CONVENIO", "NIT_PROVEEDOR", "NUMERO_PROCESO", "PROVEEDOR", "ESTADO", "OBJETIVO_CONVENIO", "TIPO_PROCESO", "FECHA_FIRMA_CONVENIO", "FECHA_INICIO_EJECUCION", "DURACION_CONVENIO", "PLAZO_EJECUCION", "PRORROGA", "PLAZO_PRORROGA", "DURACION_TOTAL","FECHA_PUBLICACION_PROCESO","ENLACE_SECOP","SUPERVISOR","PRECIO_ESTIMADO","TIPO_CONVENIO","PERSONA_APOYO_FPI","ENLACE_EVIDENCIAS"],  # Nombres reales
         dtype=str
     )
     print(df.head())  # paréntesis
@@ -58,7 +58,7 @@ async def upload_excel(
 
     # Eliminar filas con valores faltantes en campos obligatorios
     required_fields = [
-        "tipo_convenio","nit_institucion","nombre_institucion","estado_convenio","tipo_proceso"
+        "tipo_convenio","num_convenio","nit_institucion","num_proceso","nombre_institucion"
     ]
     df = df.dropna(subset=required_fields)
 
@@ -74,26 +74,10 @@ async def upload_excel(
     # df["fecha_inicio"] = pd.to_datetime(df["fecha_inicio"], errors="coerce").dt.date
 
     # # Asegurar columnas no proporcionadas
-    # df["num_convenio"] = "N/A"
-    # df["num_proceso"] = "N/A"
-    # df["objetivo_convenio"] = "N/A"
-    df["fecha_firma"] = "0001-01-01"
-    # ejemplo 2 de fecha firma: 2023-08-15T00:00:00.000Z
-    
-    df["fecha_inicio"] = "0001-01-01"
-    # df["duracion_convenio"] = "N/A"
-    df["plazo_ejecucion"] = "0001-01-01"
-    df["prorroga"] = "0001-01-01"
-    df["plazo_prorroga"] = "0001-01-01"
-    df["duracion_total"] = "N/A"
-    df["fecha_publicacion_proceso"] = "0001-01-01"
-    df["enlace_secop"] = "N/A"
-    df["supervisor"] = "N/A"
-    # df["precio_estimado"] = 0
-    df["tipo_convenio_sena"] = "N/A"
-    # df["persona_apoyo_fpi"] = "N/A"
-    df["enlace_evidencias"] = "N/A"
-    
+    # df["hora_inicio"] = "00:00:00"
+    # df["hora_fin"] = "00:00:00"
+    # df["aula_actual"] = ""
+
     # # Crear DataFrame de convenios únicos
     # df_convenios = df[[""]].drop_duplicates()
     # df_convenios["horas_lectivas"] = 0
