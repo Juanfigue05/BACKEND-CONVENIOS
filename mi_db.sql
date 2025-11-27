@@ -171,3 +171,16 @@ INSERT INTO municipio (id_municipio,nom_municipio) VALUES
 ('57066685','Santa Rosa de Cabal'),
 ('57066740','Santuario'),
 
+INSERT INTO rol (nombre_rol) VALUES
+('Admin'),
+('Instructor'),
+('aprendiz');
+
+INSERT INTO egresado_convenio (documento, num_proceso) VALUES
+('1020304050','PROC-2023-001'),
+('1122334455','PROC-2023-002'),
+('2233445566','PROC-2023-003');
+
+INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_municipio, cant_convenios) VALUES
+('891.480.035-9','Universidad Tecnológica de Pereira','Carrera 27 N° 10-02, Barrio Los Álamos','57066001',2),
+('891408261-1','Universidad Católica de Pereira','Carrera 21 N.º 49-95 Av. de las Américas','57066001',1);
