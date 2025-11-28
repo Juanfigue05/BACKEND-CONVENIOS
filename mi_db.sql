@@ -19,33 +19,33 @@ CREATE TABLE usuario (
     FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
 );
 
-CREATE TABLE centros_formacion (
-    cod_centro SMALLINT UNSIGNED PRIMARY KEY,
-    nombre_centro VARCHAR(160),
-    cod_regional TINYINT UNSIGNED,
-    nombre_regional VARCHAR(80)
-);
+-- CREATE TABLE centros_formacion (
+--     cod_centro SMALLINT UNSIGNED PRIMARY KEY,
+--     nombre_centro VARCHAR(160),
+--     cod_regional TINYINT UNSIGNED,
+--     nombre_regional VARCHAR(80)
+-- );
 
 CREATE TABLE municipio ( 
     id_municipio VARCHAR(20) PRIMARY KEY,
     nom_municipio VARCHAR(80)
 );
 
-CREATE TABLE estrategia (
-    cod_estrategia CHAR(5) PRIMARY KEY,
-    nombre VARCHAR(80)
-);
+-- CREATE TABLE estrategia (
+--     cod_estrategia CHAR(5) PRIMARY KEY,
+--     nombre VARCHAR(80)
+-- );
 
-CREATE TABLE programas_formacion (
-    cod_programa MEDIUMINT UNSIGNED PRIMARY KEY,
-    version CHAR(4),
-    nombre VARCHAR(200),
-    nivel VARCHAR(70),
-    tiempo_duracion SMALLINT UNSIGNED,
-    unidad_medida VARCHAR(50),
-    estado BOOLEAN,
-    url_pdf VARCHAR(180)
-);
+-- CREATE TABLE programas_formacion (
+--     cod_programa MEDIUMINT UNSIGNED PRIMARY KEY,
+--     version CHAR(4),
+--     nombre VARCHAR(200),
+--     nivel VARCHAR(70),
+--     tiempo_duracion SMALLINT UNSIGNED,
+--     unidad_medida VARCHAR(50),
+--     estado BOOLEAN,
+--     url_pdf VARCHAR(180)
+-- );
 
 CREATE TABLE instituciones (
     nit_institucion VARCHAR(20) PRIMARY KEY,
@@ -77,33 +77,33 @@ CREATE TABLE homologacion (
 );
 
 
-CREATE TABLE grupos (
-    ficha VARCHAR(15) PRIMARY KEY,
-    cod_programa MEDIUMINT UNSIGNED,
-    cod_centro SMALLINT UNSIGNED,
-    modalidad VARCHAR(80),
-    jornada VARCHAR(80),
-    etapa_ficha VARCHAR(80),
-    estado_curso VARCHAR(80),
-    fecha_inicio DATE,
-    fecha_fin DATE,
-    id_municipio VARCHAR(20),
-    cod_estrategia CHAR(5),
-    nombre_responsable VARCHAR(150),
-    cupo_asignado SMALLINT UNSIGNED,
-    num_aprendices_fem SMALLINT UNSIGNED,
-    num_aprendices_mas SMALLINT UNSIGNED,
-    num_aprendices_nobin SMALLINT UNSIGNED,
-    num_aprendices_matriculados SMALLINT UNSIGNED,
-    num_aprendices_activos SMALLINT UNSIGNED,
-    tipo_doc_empresa CHAR(5),
-    num_doc_empresa VARCHAR(30),
-    nombre_empresa VARCHAR(140),
-    FOREIGN KEY (cod_programa) REFERENCES programas_formacion(cod_programa),
-    FOREIGN KEY (cod_centro) REFERENCES centros_formacion(cod_centro),
-    FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio),
-    FOREIGN KEY (cod_estrategia) REFERENCES estrategia(cod_estrategia)
-);
+-- CREATE TABLE grupos (
+--     ficha VARCHAR(15) PRIMARY KEY,
+--     cod_programa MEDIUMINT UNSIGNED,
+--     cod_centro SMALLINT UNSIGNED,
+--     modalidad VARCHAR(80),
+--     jornada VARCHAR(80),
+--     etapa_ficha VARCHAR(80),
+--     estado_curso VARCHAR(80),
+--     fecha_inicio DATE,
+--     fecha_fin DATE,
+--     id_municipio VARCHAR(20),
+--     cod_estrategia CHAR(5),
+--     nombre_responsable VARCHAR(150),
+--     cupo_asignado SMALLINT UNSIGNED,
+--     num_aprendices_fem SMALLINT UNSIGNED,
+--     num_aprendices_mas SMALLINT UNSIGNED,
+--     num_aprendices_nobin SMALLINT UNSIGNED,
+--     num_aprendices_matriculados SMALLINT UNSIGNED,
+--     num_aprendices_activos SMALLINT UNSIGNED,
+--     tipo_doc_empresa CHAR(5),
+--     num_doc_empresa VARCHAR(30),
+--     nombre_empresa VARCHAR(140),
+--     FOREIGN KEY (cod_programa) REFERENCES programas_formacion(cod_programa),
+--     FOREIGN KEY (cod_centro) REFERENCES centros_formacion(cod_centro),
+--     FOREIGN KEY (id_municipio) REFERENCES municipio(id_municipio),
+--     FOREIGN KEY (cod_estrategia) REFERENCES estrategia(cod_estrategia)
+-- );
 
 -- CREATE TABLE egresados (
 --     documento VARCHAR(20) PRIMARY KEY,
@@ -276,5 +276,136 @@ BEGIN
         WHERE nit_institucion = NEW.nit_institucion;
     END IF;
 END//
+
+DELIMITER ;
+
+
+Perfecto, voy a crear los INSERT basándome en los datos del documento PDF. Primero modifico la tabla para usar nombre en vez de valor:
+sql-- 1. Modificar la tabla estadistica_categoria
+DROP TABLE IF EXISTS estadistica_categoria;
+
+CREATE TABLE estadistica_categoria (
+    id_estadistica INT AUTO_INCREMENT PRIMARY KEY,
+    categoria VARCHAR(50) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    cantidad INT DEFAULT 0,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_categoria_nombre (categoria, nombre)
+);
+
+INSERT INTO estadistica_categoria (categoria, nombre, cantidad) VALUES
+('tipo_convenio', 'Interadministrativo', 0),
+('tipo_convenio', 'Cooperación Técnica', 0),
+('tipo_convenio', 'Docencia-Servicio', 0);
+('persona_apoyo_fpi', 'Angie Tatiana Rengifo', 0),
+('persona_apoyo_fpi', 'Angela María Lara', 0),
+('persona_apoyo_fpi', 'Yolanda Agudelo', 0);
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS tr_convenios_insert_estadisticas$$
+
+CREATE TRIGGER tr_convenios_insert_estadisticas
+AFTER INSERT ON convenios
+FOR EACH ROW
+BEGIN
+    -- Actualizar estadística de tipo_convenio_sena
+    IF NEW.tipo_convenio_sena IS NOT NULL THEN
+        INSERT INTO estadistica_categoria (categoria, nombre, cantidad)
+        VALUES ('tipo_convenio', NEW.tipo_convenio_sena, 1)
+        ON DUPLICATE KEY UPDATE 
+            cantidad = cantidad + 1,
+            fecha_actualizacion = CURRENT_TIMESTAMP;
+    END IF;
+    
+    -- Actualizar estadística de persona_apoyo_fpi
+    IF NEW.persona_apoyo_fpi IS NOT NULL THEN
+        INSERT INTO estadistica_categoria (categoria, nombre, cantidad)
+        VALUES ('persona_apoyo_fpi', NEW.persona_apoyo_fpi, 1)
+        ON DUPLICATE KEY UPDATE 
+            cantidad = cantidad + 1,
+            fecha_actualizacion = CURRENT_TIMESTAMP;
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS tr_convenios_update_estadisticas$$
+
+CREATE TRIGGER tr_convenios_update_estadisticas
+AFTER UPDATE ON convenios
+FOR EACH ROW
+BEGIN
+    -- Si cambió el tipo_convenio_sena
+    IF OLD.tipo_convenio_sena != NEW.tipo_convenio_sena 
+       OR (OLD.tipo_convenio_sena IS NULL AND NEW.tipo_convenio_sena IS NOT NULL)
+       OR (OLD.tipo_convenio_sena IS NOT NULL AND NEW.tipo_convenio_sena IS NULL) THEN
+        
+        -- Decrementar el nombre anterior
+        IF OLD.tipo_convenio_sena IS NOT NULL THEN
+            UPDATE estadistica_categoria 
+            SET cantidad = GREATEST(cantidad - 1, 0),
+                fecha_actualizacion = CURRENT_TIMESTAMP
+            WHERE categoria = 'tipo_convenio' 
+              AND nombre = OLD.tipo_convenio_sena;
+        END IF;
+        
+        -- Incrementar el nombre nuevo
+        IF NEW.tipo_convenio_sena IS NOT NULL THEN
+            INSERT INTO estadistica_categoria (categoria, nombre, cantidad)
+            VALUES ('tipo_convenio', NEW.tipo_convenio_sena, 1)
+            ON DUPLICATE KEY UPDATE 
+                cantidad = cantidad + 1,
+                fecha_actualizacion = CURRENT_TIMESTAMP;
+        END IF;
+    END IF;
+    
+    -- Si cambió la persona_apoyo_fpi
+    IF OLD.persona_apoyo_fpi != NEW.persona_apoyo_fpi 
+       OR (OLD.persona_apoyo_fpi IS NULL AND NEW.persona_apoyo_fpi IS NOT NULL)
+       OR (OLD.persona_apoyo_fpi IS NOT NULL AND NEW.persona_apoyo_fpi IS NULL) THEN
+        
+        -- Decrementar el nombre anterior
+        IF OLD.persona_apoyo_fpi IS NOT NULL THEN
+            UPDATE estadistica_categoria 
+            SET cantidad = GREATEST(cantidad - 1, 0),
+                fecha_actualizacion = CURRENT_TIMESTAMP
+            WHERE categoria = 'persona_apoyo_fpi' 
+              AND nombre = OLD.persona_apoyo_fpi;
+        END IF;
+        
+        -- Incrementar el nombre nuevo
+        IF NEW.persona_apoyo_fpi IS NOT NULL THEN
+            INSERT INTO estadistica_categoria (categoria, nombre, cantidad)
+            VALUES ('persona_apoyo_fpi', NEW.persona_apoyo_fpi, 1)
+            ON DUPLICATE KEY UPDATE 
+                cantidad = cantidad + 1,
+                fecha_actualizacion = CURRENT_TIMESTAMP;
+        END IF;
+    END IF;
+END$$
+
+DROP TRIGGER IF EXISTS tr_convenios_delete_estadisticas$$
+
+CREATE TRIGGER tr_convenios_delete_estadisticas
+AFTER DELETE ON convenios
+FOR EACH ROW
+BEGIN
+    -- Decrementar estadística de tipo_convenio_sena
+    IF OLD.tipo_convenio_sena IS NOT NULL THEN
+        UPDATE estadistica_categoria 
+        SET cantidad = GREATEST(cantidad - 1, 0),
+            fecha_actualizacion = CURRENT_TIMESTAMP
+        WHERE categoria = 'tipo_convenio' 
+          AND nombre = OLD.tipo_convenio_sena;
+    END IF;
+    
+    -- Decrementar estadística de persona_apoyo_fpi
+    IF OLD.persona_apoyo_fpi IS NOT NULL THEN
+        UPDATE estadistica_categoria 
+        SET cantidad = GREATEST(cantidad - 1, 0),
+            fecha_actualizacion = CURRENT_TIMESTAMP
+        WHERE categoria = 'persona_apoyo_fpi' 
+          AND nombre = OLD.persona_apoyo_fpi;
+    END IF;
+END$$
 
 DELIMITER ;

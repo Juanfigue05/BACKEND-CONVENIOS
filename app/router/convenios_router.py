@@ -116,10 +116,24 @@ def get_by_estado_convenio(estado_conv: str, db: Session = Depends(get_db),
         return convenios
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-
     
-@router.get("/obtener-por-tipo-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
-def get_by_tipo_convenio(tipo_proceso:str, db: Session = Depends(get_db),
+@router.get("/obtener-por-tipo-convenio", status_code=status.HTTP_200_OK, response_model=List[RetornoConvenio])
+def get_by_tipo_convenio(tipo_convenio: str, db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
+    try:
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para consultar convenios")
+        
+        convenios = crud_convenios.obtener_convenios_by_tipo_convenio(db, tipo_convenio)
+        if not convenios:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Convenios no encontrados")
+        return convenios
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/obtener-por-tipo-proceso", status_code=status.HTTP_200_OK, response_model=List[RetornoConvenio])
+def get_by_tipo_proceso(tipo_proceso: str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
