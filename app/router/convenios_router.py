@@ -119,7 +119,7 @@ def get_by_estado_convenio(estado_conv: str, db: Session = Depends(get_db),
 
     
 @router.get("/obtener-por-tipo-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
-def get_by_tipo_convenio(nit_institucion:str, db: Session = Depends(get_db),
+def get_by_tipo_convenio(tipo_proceso:str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
