@@ -12,7 +12,6 @@ def insertar_datos_en_bd(db: Session, df_convenios):
     errores = []
 
     # Realizar condicion para verificar si el convenio ya existe utilizando una consulta SQL
-    # Iterar sobre cada fila del DataFrame
     for index, row in df_convenios.iterrows():
         # Verificar si el convenio ya existe
         verificar_convenio_sql = text("""
