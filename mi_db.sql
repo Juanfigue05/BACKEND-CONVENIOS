@@ -105,21 +105,21 @@ CREATE TABLE grupos (
     FOREIGN KEY (cod_estrategia) REFERENCES estrategia(cod_estrategia)
 );
 
-CREATE TABLE egresados (
-    documento VARCHAR(20) PRIMARY KEY,
-    ficha VARCHAR(15) UNIQUE,
-    convenio_media_tecnica BOOLEAN,
-    fecha_certificacion DATE,
-    estado_certificado VARCHAR(10),
-    tipo_documento VARCHAR(15),
-    nombre_egresado VARCHAR(100),
-    lugar_recidencia VARCHAR(20),
-    correo VARCHAR(100),
-    tel_principal VARCHAR(15),
-    tel_alterno VARCHAR(15),
-    FOREIGN KEY (ficha) REFERENCES grupos(ficha),
-    FOREIGN KEY (lugar_recidencia) REFERENCES municipio(id_municipio)
-);
+-- CREATE TABLE egresados (
+--     documento VARCHAR(20) PRIMARY KEY,
+--     ficha VARCHAR(15) UNIQUE,
+--     convenio_media_tecnica BOOLEAN,
+--     fecha_certificacion DATE,
+--     estado_certificado VARCHAR(10),
+--     tipo_documento VARCHAR(15),
+--     nombre_egresado VARCHAR(100),
+--     lugar_recidencia VARCHAR(20),
+--     correo VARCHAR(100),
+--     tel_principal VARCHAR(15),
+--     tel_alterno VARCHAR(15),
+--     FOREIGN KEY (ficha) REFERENCES grupos(ficha),
+--     FOREIGN KEY (lugar_recidencia) REFERENCES municipio(id_municipio)
+-- );
 
 CREATE TABLE convenios (
     id_convenio INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,17 +145,17 @@ CREATE TABLE convenios (
     tipo_convenio_sena VARCHAR(50),
     persona_apoyo_fpi VARCHAR(80),
     enlace_evidencias VARCHAR(100),
-    fecha_vigencia DATE,
     FOREIGN KEY (nit_institucion) REFERENCES instituciones(nit_institucion)
 );
 
-CREATE TABLE egresado_convenio (
-    id_relacion INT AUTO_INCREMENT PRIMARY KEY,
-    documento VARCHAR(20),
-    id_convenio VARCHAR(50),
-    FOREIGN KEY (documento) REFERENCES egresados(documento),
-    FOREIGN KEY (num_proceso) REFERENCES convenios(id_convenio)
-);
+-- CREATE TABLE egresado_convenio (
+--     id_relacion INT AUTO_INCREMENT PRIMARY KEY,
+--     documento VARCHAR(20),
+--     id_convenio INT,
+--     FOREIGN KEY (documento) REFERENCES egresados(documento),
+--     FOREIGN KEY (id_convenio) REFERENCES convenios(id_convenio)
+-- );
+
 
 INSERT INTO municipio (id_municipio,nom_municipio) VALUES
 ('57066001','Pereira'),
@@ -171,24 +171,92 @@ INSERT INTO municipio (id_municipio,nom_municipio) VALUES
 ('57066511','Pueblo Rico'),
 ('57066535','Quinchia'),
 ('57066685','Santa Rosa de Cabal'),
-('57066740','Santuario')
+('57066740','Santuario');
+
+
+INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_municipio, cant_convenios) VALUES
+('800099310-6', 'ALCALDIA MUNICIPIO DE DOSQUEBRADAS', 'Av. Simón Bolívar No. 36-44 CAM', '57066170', 0),
+('891480085-7', 'GOBERNACIÓN DE RISARALDA', 'Calle 19 No. 13-17', '57066001', 0),
+('891480030-2', 'MUNICIPIO DE PEREIRA-OFICIAL', 'Cra. 7 No. 18-55', '57066001', 0),
+('816005003-5', 'EMPRESA SOCIAL DEL ESTADO SALUD PEREIRA', 'Carrera 7 No. 40-34', '57066001', 0),
+('800231235-7', 'E.S.E HOSPITAL UNIVERSITARIO SAN JORGE DE PEREIRA', 'Calle 27 No. 6-40', '57066001', 0),
+('800149695', 'FARMASANITAS S.A.S.', 'Carrera 13 No. 26-45', '57066001', 0),
+('891409025-4', 'EMPRESA SOCIAL DEL ESTADO HOSPITAL SAN RAFAEL DEL MUNICIPIO DE PUEBLO RICO', 'Calle 6 No. 8-25', '57066511', 0),
+('891410661-0', 'EMPRESA SOCIAL DEL ESTADO HOSPITAL SANTA ANA DEL MUNICIPIO DE GUATICA', 'Carrera 5 No. 4-30', '57066320', 0),
+('860013798-5', 'UNIVERSIDAD LIBRE DE PEREIRA', 'Belmonte Avenida Las Américas', '57066001', 0),
+('891409768-8', 'CORPORACION UNIVERSITARIA SANTA ROSA DE CABAL UNISARC', 'Km 4 Vía Santa Rosa - Chinchiná', '57066685', 0),
+('860029924-7', 'UNIVERSIDAD COOPERATIVA DE COLOMBIA - UCC', 'Carrera 7 No. 32-33', '57066001', 0),
+('891408248-5', 'CORPORACION INSTITUTO DE ADMINISTRACION Y FINANZAS CIAF', 'Carrera 8 No. 25-67', '57066001', 0),
+('891408261-1', 'UNIVERSIDAD CATÓLICA', 'Avenida de las Américas No. 49-95', '57066001', 0),
+('900475373', 'INSTITUTO TECNOLOGICO DE DOSQUEBRADAS', 'Carrera 16 No. 32-50', '57066170', 0),
+('860020232-8', 'COLEGIO INMACULADO CORAZÓN DE MARIA - RELIGIOSAS FRANCISCANAS', 'Calle 50 No. 14-56', '57066001', 0),
+('900077932-5', 'COLEGIO SANTA MARIA GORETTI', 'Carrera 27 No. 75-35', '57066001', 0),
+('860010516-1', 'COLEGIO ORDEN DE RELIGIOSAS ADORATRICES DE COLOMBIA', 'Carrera 8 No. 18-35', '57066001', 0),
+('890980084-1', 'CONGREGACIÓN SIERVAS DEL SANTISIMO Y DE LA CARIDAD COLEGIO SAN JOSÉ', 'Calle 19 No. 8-41', '57066001', 0),
+('900118690-5', 'COLEGIO CONGREGACIÓN RELIGIOSA PROVINCIA DE SAN JOSÉ, HERMANITAS DE LA ANUNCIACIÓN', 'Carrera 9 No. 24-18', '57066001', 0),
+('SIN-ID-001', 'COLEGIO SANTA ROSA DE LIMA', 'Carrera 6 No. 12-30', '57066001', 0),
+('SIN-ID-002', 'EMPRESA SOCIAL DEL ESTADO HOSPITAL SAN JOSE DEL MUNICIPIO DE BELEN DE UMBRIA', 'Carrera 8 No. 7-45', '57066088', 0),
+('800215546-5', 'INSTITUTO NACIONAL PENITENCIARIO Y CARCELARIO INPEC', 'Carrera 54A No. 26A-09', '57066001', 0),
+('899999239-2', 'ICBF', 'Avenida Carrera 68 No. 64C-75', '57066001', 0),
+('800152783-2', 'FISCALIA', 'Calle 19 No. 7-20', '57066001', 0),
+('830131648-6', 'ARN', 'Carrera 9 No. 76-27', '57066001', 0),
+('899999022-1', 'MDN', 'Carrera 54 No. 26-25', '57066001', 0);
+
 
 INSERT INTO rol (nombre_rol) VALUES
 ('Admin'),
 ('Instructor'),
 ('aprendiz');
 
-INSERT INTO egresado_convenio (documento, num_proceso) VALUES
-('1020304050','PROC-2023-001'),
-('1122334455','PROC-2023-002'),
-('2233445566','PROC-2023-003');
+-- INSERT INTO egresado_convenio (documento, num_proceso) VALUES
+-- ('1020304050','PROC-2023-001'),
+-- ('1122334455','PROC-2023-002'),
+-- ('2233445566','PROC-2023-003');
 
-INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_municipio, cant_convenios) VALUES
-('891480035-9','Universidad Tecnológica de Pereira','Carrera 27 N° 10-02, Barrio Los Álamos','57066001',2),
-('891408261-1','Universidad Católica de Pereira','Carrera 21 N.º 49-95 Av. de las Américas','57066001',1);
+-- INSERT INTO egresado_convenio (documento, num_proceso) VALUES
+-- ('3344556677','PROC-2023-004'),
+-- ('4455667788','PROC-2023-005');
 
-update instituciones set nit_institucion = '891480035-9' where nit_institucion = '891.480.035-9';
 
-INSERT INTO egresado_convenio (documento, num_proceso) VALUES
-('3344556677','PROC-2023-004'),
-('4455667788','PROC-2023-005');
+DELIMITER //
+CREATE TRIGGER tr_convenios_after_insert
+AFTER INSERT ON convenios
+FOR EACH ROW
+BEGIN
+    UPDATE instituciones 
+    SET cant_convenios = cant_convenios + 1
+    WHERE nit_institucion = NEW.nit_institucion;
+END//
+DELIMITER ;
+
+-- Trigger para DELETE en convenios
+DELIMITER //
+CREATE TRIGGER tr_convenios_after_delete
+AFTER DELETE ON convenios
+FOR EACH ROW
+BEGIN
+    UPDATE instituciones 
+    SET cant_convenios = cant_convenios - 1
+    WHERE nit_institucion = OLD.nit_institucion;
+END//
+DELIMITER ;
+
+-- Trigger para UPDATE en convenios (si cambia el NIT)
+DELIMITER //
+CREATE TRIGGER tr_convenios_after_update
+AFTER UPDATE ON convenios
+FOR EACH ROW
+BEGIN
+    IF OLD.nit_institucion <> NEW.nit_institucion THEN
+        -- Decrementar en la institución anterior
+        UPDATE instituciones 
+        SET cant_convenios = cant_convenios - 1
+        WHERE nit_institucion = OLD.nit_institucion;
+        
+        -- Incrementar en la nueva institución
+        UPDATE instituciones 
+        SET cant_convenios = cant_convenios + 1
+        WHERE nit_institucion = NEW.nit_institucion;
+    END IF;
+END//
+DELIMITER ;
