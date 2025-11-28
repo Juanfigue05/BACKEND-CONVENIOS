@@ -18,7 +18,7 @@ def create_convenio(convenio: ConvenioBase, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener por numero convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+@router.get("/obtener-por-numero-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_id(num_convenio: str, db: Session = Depends(get_db)):
     try:
         convenios = crud_convenios.obtener_convenios_by_num_convenio(db, num_convenio)
@@ -28,7 +28,7 @@ def get_by_id(num_convenio: str, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nit de institucion", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+@router.get("/obtener-por-nit-institucion", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_nit_institucion(nit_institucion:str, db: Session = Depends(get_db)):
     try:
         institucion = crud_convenios.obtener_convenios_by_nit_institucion(db, nit_institucion)
@@ -38,7 +38,7 @@ def get_by_nit_institucion(nit_institucion:str, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por estado convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+@router.get("/obtener-por-estado-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_estado_convenio(estado_conv:str, db: Session = Depends(get_db)):
     try:
         estado_convenio = crud_convenios.obtener_convenios_by_estado_convenio(db, estado_conv)
@@ -48,7 +48,7 @@ def get_by_estado_convenio(estado_conv:str, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nit de institucion clave", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+@router.get("/obtener-por-nit-institucion-clave", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_nit_institucion_clave(nit_institucion_seguro:str, db: Session = Depends(get_db)):
     try:
         nit_inst_seguro = crud_convenios.obtener_convenios_by_nit_security(db, nit_institucion_seguro)
@@ -58,7 +58,7 @@ def get_by_nit_institucion_clave(nit_institucion_seguro:str, db: Session = Depen
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por tipo convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
+@router.get("/obtener-por-tipo-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_tipo_convenio(nit_institucion:str, db: Session = Depends(get_db)):
     try:
         tipo_conv = crud_convenios.obtener_convenios_by_tipo_convenio(db, nit_institucion)

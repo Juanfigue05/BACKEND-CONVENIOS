@@ -7,7 +7,7 @@ from app.crud import egresado_convenio as crud_egresado_convenio
 
 router = APIRouter()
 
-@router.post("/registrar convenio-egresado", status_code=status.HTTP_201_CREATED)
+@router.post("/registrar-convenio-egresado", status_code=status.HTTP_201_CREATED)
 def create_egresadoConvenio(egresado_convenio: Egresado_convenioBase, db: Session = Depends(get_db)):
     try:
         crear = crud_egresado_convenio.create_egresado_convenio(db, egresado_convenio)

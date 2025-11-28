@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.municipio import MunicipioBase
 from sqlalchemy.orm import Session
@@ -12,12 +13,21 @@ def create_municipio(municipio: MunicipioBase, db: Session = Depends(get_db)):
     try:
         crear = crud_municipio.create_municipio(db, municipio)
         if crear:
-            return {"message": "Centro creado correctamente"}
+            return {"message": "Municipio creado correctamente"}
         else:
             return {"message": "El municipio no puede ser creado correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
    
+@router.get("/obtener-por-nombre", status_code=status.HTTP_200_OK, response_model=List[MunicipioBase])
+async def get_by_name(nom_municipio:str, db: Session = Depends(get_db)):
+    try:
+        municipio = crud_municipio.get_municipio_by_name(db, nom_municipio)
+        if municipio is None:
+            raise HTTPException(status_code=404, detail="Municipio no encontrado")
+        return municipio
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/obtener-por-id/{id_municipio}", status_code=status.HTTP_200_OK, response_model=MunicipioBase)
 def get_by_id(id_municipio:int, db: Session = Depends(get_db)):
@@ -37,5 +47,14 @@ def update_municipio(id_municipio: int, municipio: MunicipioBase, db: Session = 
         if not success:
             raise HTTPException(status_code=400, detail="No se pudo actualizar el usuario")
         return {"message": "Usuario actualizado correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.delete("/eliminar-por-id/{id_municipio}")
+def delete_municipio(id_municipio: int, db: Session = Depends(get_db)):
+    try: 
+        municipio = crud_municipio.municipio_delete(db, id_municipio)
+        if municipio:
+            return {"message": "Municipio eliminado correctamente"}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))

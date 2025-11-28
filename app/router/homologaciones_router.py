@@ -18,7 +18,7 @@ def create_institucion(homologacion: HomologacionBase, db: Session = Depends(get
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener por id", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+@router.get("/obtener-por-id", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
 def get_by_id(id_homologacion: int, db: Session = Depends(get_db)):
     try:
         homologacion = crud_homologacion.obtener_homologacion_by_id(db, id_homologacion)
@@ -28,7 +28,7 @@ def get_by_id(id_homologacion: int, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nivel de programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+@router.get("/obtener-por-nivel-programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
 def get_by_mivel_programa(nivel_program:str, db: Session = Depends(get_db)):
     try:
         niv_prog = crud_homologacion.obtener_homologacion_by_nivel_programa(db, nivel_program)
@@ -38,7 +38,7 @@ def get_by_mivel_programa(nivel_program:str, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nombre de programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+@router.get("/obtener-por-nombre-programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
 def get_by_nombre_programa_sena(nomb_program_sena:str, db: Session = Depends(get_db)):
     try:
         nom_pro_sena = crud_homologacion.obtener_homologacion_by_nombre_programa_sena(db, nomb_program_sena)

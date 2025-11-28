@@ -19,7 +19,7 @@ def create_institucion(institucion: InstitucionBase, db: Session = Depends(get_d
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener por nit", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
+@router.get("/obtener-por-nit", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
 def get_by_nit(nit_institucion: str, db: Session = Depends(get_db)):
     try:
         instituciones = crud_instituciones.get_institucion_by_nit(db, nit_institucion)
@@ -29,7 +29,7 @@ def get_by_nit(nit_institucion: str, db: Session = Depends(get_db)):
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener por nombre", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
+@router.get("/obtener-por-nombre", status_code=status.HTTP_200_OK, response_model=List[RetornarInstitucion])
 async def get_by_name(nombre_institucion:str, db: Session = Depends(get_db)):
     try:
         institucion = crud_instituciones.get_institucion_by_name(db, nombre_institucion)

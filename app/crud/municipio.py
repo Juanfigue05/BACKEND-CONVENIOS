@@ -41,8 +41,23 @@ def get_municipio_by_id(db: Session, id_municipio:int):
         return result
     
     except SQLAlchemyError as e:
-        logger.error(f"Error al bucar usuario por id: {e}")
-        raise Exception("Error de base de datos al buscar el usuario")
+        logger.error(f"Error al bucar municipio por id: {e}")
+        raise Exception("Error de base de datos al buscar el municipio")
+    
+def get_municipio_by_name(db: Session, nom_municipio:str):
+    try:
+        # buscar por patrón (ej. una letra) usando LIKE, se añade el % alrededor del parámetro
+        nom_municipio = f"%{nom_municipio}%"
+        query = text("""
+            SELECT id_municipio, nom_municipio
+            FROM municipio
+            WHERE UPPER(nom_municipio) LIKE UPPER(:nom_municipio)
+        """)
+        result = db.execute(query, {"nom_municipio": nom_municipio}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar municipio por nombre: {e}")
+        raise Exception("Error de la base de datos al buscar municipio")
     
 def update_municipio(db: Session, id_municipio: int, municipio_update: MunicipioBase) -> bool:
     try:
@@ -57,5 +72,18 @@ def update_municipio(db: Session, id_municipio: int, municipio_update: Municipio
         return True
     except SQLAlchemyError as e:
         db.rollback()
-        logger.error(f"Error al actualizar usuario: {e}")
-        raise Exception("Error de base de datos al actualizar el usuario")
+        logger.error(f"Error al actualizar municipio: {e}")
+        raise Exception("Error de base de datos al actualizar el municipio")
+    
+def municipio_delete(db: Session, id_municipio: int) -> bool:
+    try:
+        query = text("""
+            DELETE FROM municipio
+            WHERE id_municipio = :id_municipio
+        """)
+        db.execute(query, {"id_municipio": id_municipio})
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        logger.error(f"Error al eliminar municipio por id {e}")
+        raise Exception("Error de base de datos al eliminar municipio")
