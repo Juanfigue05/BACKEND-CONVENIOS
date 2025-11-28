@@ -16,19 +16,19 @@ def create_institucion(db: Session, institucion: InstitucionBase) -> Optional[bo
         query = text("""
             INSERT INTO instituciones(nit_institucion, nombre_institucion,
             direccion, id_municipio, cant_convenios)
-            VALUES (:nit_institucion, :nombre_institucion, :direccion, :id_municipio, :cant_convenios )
+            VALUES (:nit_institucion, :nombre_institucion, :direccion, :id_municipio, :cant_convenios)
         """)
         db.execute(query, dataInstitucion)
         db.commit()
         return True
     except Exception as e:
         db.rollback()
-        logger.error(f"Error al crear la institucción :{e}")
+        logger.error(f"Error al crear la institución: {e}")
         raise Exception("Error de base de datos al crear una institución")
 
-def get_institucion_by_nit(db: Session, nit_institucion:str):
+def get_institucion_by_nit(db: Session, nit_institucion: str):
     try:
-        ni_institucion = f"%{nit_institucion}%"
+        ni_institucion = f"{nit_institucion}%"
         query = text("""
             SELECT instituciones.nit_institucion, 
                 instituciones.nombre_institucion,
@@ -47,10 +47,9 @@ def get_institucion_by_nit(db: Session, nit_institucion:str):
         logger.error(f"Error al buscar institución por nit: {e}")
         raise Exception("Error de la base de datos al buscar institución")
     
-def get_institucion_by_name(db: Session, name_institucion:str):
+def get_institucion_by_name(db: Session, name_institucion: str):
     try:
-        # buscar por patrón (ej. una letra) usando LIKE, se añade el % alrededor del parámetro
-        name_institucion = f"%{name_institucion}%"
+        name_institucion = f"{name_institucion}%"
         query = text("""
             SELECT instituciones.nit_institucion, 
                 instituciones.nombre_institucion,
@@ -69,7 +68,168 @@ def get_institucion_by_name(db: Session, name_institucion:str):
         logger.error(f"Error al buscar institución por nombre: {e}")
         raise Exception("Error de la base de datos al buscar institución")
 
-def institucion_update(db: Session, nit_institucion:str, update_institucion: EditarInstitucion) -> bool:
+def get_institucion_by_direccion(db: Session, direccion: str):
+    try:
+        direccion_pattern = f"{direccion}%"
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE UPPER(instituciones.direccion) LIKE UPPER(:direccion)
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"direccion": direccion_pattern}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por dirección: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_municipio(db: Session, id_municipio: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.id_municipio = :id_municipio
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"id_municipio": id_municipio}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por municipio: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_convenios(db: Session, cant_convenios: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.cant_convenios = :cant_convenios
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"cant_convenios": cant_convenios}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por cantidad de convenios: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_rango_convenios(db: Session, min_convenios: int, max_convenios: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.cant_convenios BETWEEN :min_convenios AND :max_convenios
+            ORDER BY instituciones.cant_convenios DESC, instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"min_convenios": min_convenios, "max_convenios": max_convenios}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por rango de convenios: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_all_instituciones(db: Session):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al obtener todas las instituciones: {e}")
+        raise Exception("Error de la base de datos al obtener instituciones")
+
+def busqueda_avanzada_instituciones(
+    db: Session, 
+    nit_institucion: Optional[str] = None,
+    nombre_institucion: Optional[str] = None,
+    direccion: Optional[str] = None,
+    id_municipio: Optional[int] = None,
+    min_convenios: Optional[int] = None,
+    max_convenios: Optional[int] = None
+):
+    try:
+        conditions = []
+        params = {}
+        
+        if nit_institucion:
+            conditions.append("UPPER(instituciones.nit_institucion) LIKE UPPER(:nit_institucion)")
+            params["nit_institucion"] = f"{nit_institucion}%"
+        
+        if nombre_institucion:
+            conditions.append("UPPER(instituciones.nombre_institucion) LIKE UPPER(:nombre_institucion)")
+            params["nombre_institucion"] = f"{nombre_institucion}%"
+        
+        if direccion:
+            conditions.append("UPPER(instituciones.direccion) LIKE UPPER(:direccion)")
+            params["direccion"] = f"{direccion}%"
+        
+        if id_municipio is not None:
+            conditions.append("instituciones.id_municipio = :id_municipio")
+            params["id_municipio"] = id_municipio
+        
+        if min_convenios is not None and max_convenios is not None:
+            conditions.append("instituciones.cant_convenios BETWEEN :min_convenios AND :max_convenios")
+            params["min_convenios"] = min_convenios
+            params["max_convenios"] = max_convenios
+        elif min_convenios is not None:
+            conditions.append("instituciones.cant_convenios >= :min_convenios")
+            params["min_convenios"] = min_convenios
+        elif max_convenios is not None:
+            conditions.append("instituciones.cant_convenios <= :max_convenios")
+            params["max_convenios"] = max_convenios
+        
+        where_clause = " AND ".join(conditions) if conditions else "1=1"
+        
+        query = text(f"""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE {where_clause}
+            ORDER BY instituciones.nombre_institucion
+        """)
+        
+        result = db.execute(query, params).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error en búsqueda avanzada de instituciones: {e}")
+        raise Exception("Error de la base de datos en búsqueda avanzada")
+
+def institucion_update(db: Session, nit_institucion: str, update_institucion: EditarInstitucion) -> bool:
     try:
         fields = update_institucion.model_dump(exclude_unset=True)
         if not fields:
@@ -78,23 +238,185 @@ def institucion_update(db: Session, nit_institucion:str, update_institucion: Edi
         fields["nit_institucion"] = nit_institucion
         
         query = text(f"UPDATE instituciones SET {set_clause} WHERE nit_institucion = :nit_institucion")
-        db.execute(query, fields)
+        result = db.execute(query, fields)
         db.commit()
-        return True
+        return result.rowcount > 0
     except SQLAlchemyError as e:
         logger.error(f"Error al editar institución: {e}")
         db.rollback() 
         raise Exception("Error de base de datos al actualizar institución")
 
-def institucion_delete(db: Session, nit:str):
+def get_institucion_by_direccion(db: Session, direccion: str):
+    try:
+        direccion_pattern = f"%{direccion}%"
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE UPPER(instituciones.direccion) LIKE UPPER(:direccion)
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"direccion": direccion_pattern}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por dirección: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_municipio(db: Session, id_municipio: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.id_municipio = :id_municipio
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"id_municipio": id_municipio}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por municipio: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_convenios(db: Session, cant_convenios: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.cant_convenios = :cant_convenios
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"cant_convenios": cant_convenios}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por cantidad de convenios: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_institucion_by_rango_convenios(db: Session, min_convenios: int, max_convenios: int):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE instituciones.cant_convenios BETWEEN :min_convenios AND :max_convenios
+            ORDER BY instituciones.cant_convenios DESC, instituciones.nombre_institucion
+        """)
+        result = db.execute(query, {"min_convenios": min_convenios, "max_convenios": max_convenios}).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar institución por rango de convenios: {e}")
+        raise Exception("Error de la base de datos al buscar institución")
+
+def get_all_instituciones(db: Session):
+    try:
+        query = text("""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            ORDER BY instituciones.nombre_institucion
+        """)
+        result = db.execute(query).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error al obtener todas las instituciones: {e}")
+        raise Exception("Error de la base de datos al obtener instituciones")
+
+def busqueda_avanzada_instituciones(
+    db: Session, 
+    nit_institucion: Optional[str] = None,
+    nombre_institucion: Optional[str] = None,
+    direccion: Optional[str] = None,
+    id_municipio: Optional[int] = None,
+    min_convenios: Optional[int] = None,
+    max_convenios: Optional[int] = None
+):
+    try:
+        conditions = []
+        params = {}
+        
+        if nit_institucion:
+            conditions.append("UPPER(instituciones.nit_institucion) LIKE UPPER(:nit_institucion)")
+            params["nit_institucion"] = f"%{nit_institucion}%"
+        
+        if nombre_institucion:
+            conditions.append("UPPER(instituciones.nombre_institucion) LIKE UPPER(:nombre_institucion)")
+            params["nombre_institucion"] = f"%{nombre_institucion}%"
+        
+        if direccion:
+            conditions.append("UPPER(instituciones.direccion) LIKE UPPER(:direccion)")
+            params["direccion"] = f"%{direccion}%"
+        
+        if id_municipio is not None:
+            conditions.append("instituciones.id_municipio = :id_municipio")
+            params["id_municipio"] = id_municipio
+        
+        if min_convenios is not None and max_convenios is not None:
+            conditions.append("instituciones.cant_convenios BETWEEN :min_convenios AND :max_convenios")
+            params["min_convenios"] = min_convenios
+            params["max_convenios"] = max_convenios
+        elif min_convenios is not None:
+            conditions.append("instituciones.cant_convenios >= :min_convenios")
+            params["min_convenios"] = min_convenios
+        elif max_convenios is not None:
+            conditions.append("instituciones.cant_convenios <= :max_convenios")
+            params["max_convenios"] = max_convenios
+        
+        where_clause = " AND ".join(conditions) if conditions else "1=1"
+        
+        query = text(f"""
+            SELECT instituciones.nit_institucion, 
+                instituciones.nombre_institucion,
+                instituciones.direccion, 
+                instituciones.id_municipio, 
+                instituciones.cant_convenios, 
+                municipio.nom_municipio
+            FROM instituciones
+            INNER JOIN municipio ON instituciones.id_municipio = municipio.id_municipio
+            WHERE {where_clause}
+            ORDER BY instituciones.nombre_institucion
+        """)
+        
+        result = db.execute(query, params).mappings().all()
+        return result
+    except SQLAlchemyError as e:
+        logger.error(f"Error en búsqueda avanzada de instituciones: {e}")
+        raise Exception("Error de la base de datos en búsqueda avanzada")
+
+def institucion_delete(db: Session, nit: str):
     try:
         query = text("""
             DELETE FROM instituciones
             WHERE instituciones.nit_institucion = :el_nit
         """)
-        db.execute(query, {"el_nit":nit})
+        result = db.execute(query, {"el_nit": nit})
         db.commit()
-        return True
+        return result.rowcount > 0
     except SQLAlchemyError as e:
-        logger.error(f"Error al eliminar institución por nit {e}")
+        logger.error(f"Error al eliminar institución por nit: {e}")
+        db.rollback()
         raise Exception("Error de base de datos al eliminar institución")
