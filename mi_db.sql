@@ -280,8 +280,6 @@ END//
 DELIMITER ;
 
 
-Perfecto, voy a crear los INSERT basándome en los datos del documento PDF. Primero modifico la tabla para usar nombre en vez de valor:
-sql-- 1. Modificar la tabla estadistica_categoria
 DROP TABLE IF EXISTS estadistica_categoria;
 
 CREATE TABLE estadistica_categoria (
