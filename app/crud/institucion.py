@@ -74,7 +74,7 @@ def institucion_update(db: Session, nit_institucion:str, update_institucion: Edi
         fields = update_institucion.model_dump(exclude_unset=True)
         if not fields:
             return False
-        set_clause = ", ".join([f"{key} =: {key}" for key in fields])
+        set_clause = ", ".join([f"{key} = :{key}" for key in fields])
         fields["nit_institucion"] = nit_institucion
         
         query = text(f"UPDATE institucion SET {set_clause} WHERE nit_institucion = :nit_institucion")
@@ -83,6 +83,7 @@ def institucion_update(db: Session, nit_institucion:str, update_institucion: Edi
         return True
     except SQLAlchemyError as e:
         logger.error(f"Error al editar institución: {e}")
+        db.rollback() 
         raise Exception("Error de base de datos al actualizar institución")
 
 def institucion_delete(db: Session, nit:str):
