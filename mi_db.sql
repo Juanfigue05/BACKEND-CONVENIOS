@@ -205,7 +205,6 @@ INSERT INTO instituciones (nit_institucion, nombre_institucion, direccion, id_mu
 
 INSERT INTO rol (nombre_rol) VALUES
 ('Admin'),
-('Instructor'),
 ('aprendiz');
 
 -- INSERT INTO egresado_convenio (documento, num_proceso) VALUES
