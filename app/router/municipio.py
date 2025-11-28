@@ -45,8 +45,8 @@ def update_municipio(id_municipio: int, municipio: MunicipioBase, db: Session = 
     try:
         success = crud_municipio.update_municipio(db, id_municipio, municipio)
         if not success:
-            raise HTTPException(status_code=400, detail="No se pudo actualizar el usuario")
-        return {"message": "Usuario actualizado correctamente"}
+            raise HTTPException(status_code=400, detail="No se pudo actualizar el municipio")
+        return {"message": "Municipio actualizado correctamente"}
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
