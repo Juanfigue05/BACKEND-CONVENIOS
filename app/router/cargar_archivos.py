@@ -1,7 +1,9 @@
 
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 import pandas as pd
 from sqlalchemy.orm import Session
+from app.schemas.usuarios import RetornoUsuario
+from app.router.dependencies import get_current_user
 from io import BytesIO
 from app.crud.cargar_archivos import insertar_datos_en_bd
 from core.database import get_db
@@ -11,8 +13,12 @@ router = APIRouter()
 @router.post("/upload-excel-convenios/")
 async def upload_excel(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
 ):
+    if user_token.id_rol != 1:
+        raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+    
     contents = await file.read()
     df = pd.read_excel(
         BytesIO(contents),
