@@ -76,12 +76,12 @@ async def upload_excel(
     # # Asegurar columnas no proporcionadas
     # df["num_convenio"] = "N/A"
     # df["num_proceso"] = "N/A"
-    # df["objetivo_convenio"] = "N/A"
+    df["objetivo_convenio"] = "N/A"
     df["fecha_firma"] = "0001-01-01"
     # ejemplo 2 de fecha firma: 2023-08-15T00:00:00.000Z
     
     df["fecha_inicio"] = "0001-01-01"
-    # df["duracion_convenio"] = "N/A"
+    df["duracion_convenio"] = "N/A"
     df["plazo_ejecucion"] = "0001-01-01"
     df["prorroga"] = "0001-01-01"
     df["plazo_prorroga"] = "0001-01-01"
@@ -91,7 +91,7 @@ async def upload_excel(
     df["supervisor"] = "N/A"
     # df["precio_estimado"] = 0
     df["tipo_convenio_sena"] = "N/A"
-    # df["persona_apoyo_fpi"] = "N/A"
+    df["persona_apoyo_fpi"] = "N/A"
     df["enlace_evidencias"] = "N/A"
     
     # # Crear DataFrame de convenios únicos
