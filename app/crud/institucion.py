@@ -15,8 +15,8 @@ def create_institucion(db: Session, institucion: InstitucionBase) -> Optional[bo
         
         query = text("""
             INSERT INTO instituciones(nit_institucion, nombre_institucion,
-            direccion, id_municipio)
-            VALUES (:nit_institucion, :nombre_institucion, :direccion, :id_municipio)
+            direccion, id_municipio, cant_convenios)
+            VALUES (:nit_institucion, :nombre_institucion, :direccion, :id_municipio, :cant_convenios )
         """)
         db.execute(query, dataInstitucion)
         db.commit()
