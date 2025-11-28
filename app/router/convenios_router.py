@@ -69,21 +69,7 @@ def get_by_estado_convenio(estado_conv:str, db: Session = Depends(get_db),
         return estado_convenio
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-@router.get("/obtener-por-nit-institucion-clave", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
-def get_by_nit_institucion_clave(nit_institucion_seguro:str, db: Session = Depends(get_db),
-    user_token: RetornoUsuario = Depends(get_current_user)
-):
-    try:
-        if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
-        
-        nit_inst_seguro = crud_convenios.obtener_convenios_by_nit_security(db, nit_institucion_seguro)
-        if nit_inst_seguro is None:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Convenio no encontrado")
-        return nit_inst_seguro
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
     
 @router.get("/obtener-por-tipo-convenio", status_code=status.HTTP_200_OK, response_model=RetornoConvenio)
 def get_by_tipo_convenio(nit_institucion:str, db: Session = Depends(get_db),
