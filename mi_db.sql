@@ -217,46 +217,65 @@ INSERT INTO rol (nombre_rol) VALUES
 -- ('3344556677','PROC-2023-004'),
 -- ('4455667788','PROC-2023-005');
 
+ALTER TABLE convenios 
+ADD UNIQUE KEY uk_convenio_unico (num_convenio, nit_institucion);
+
 
 DELIMITER //
+
+-- Trigger para INSERT: Recalcula el total de esa institución
 CREATE TRIGGER tr_convenios_after_insert
 AFTER INSERT ON convenios
 FOR EACH ROW
 BEGIN
     UPDATE instituciones 
-    SET cant_convenios = cant_convenios + 1
+    SET cant_convenios = (
+        SELECT COUNT(*) 
+        FROM convenios 
+        WHERE nit_institucion = NEW.nit_institucion
+    )
     WHERE nit_institucion = NEW.nit_institucion;
 END//
-DELIMITER ;
 
--- Trigger para DELETE en convenios
-DELIMITER //
+-- Trigger para DELETE: Recalcula el total de esa institución
 CREATE TRIGGER tr_convenios_after_delete
 AFTER DELETE ON convenios
 FOR EACH ROW
 BEGIN
     UPDATE instituciones 
-    SET cant_convenios = cant_convenios - 1
+    SET cant_convenios = (
+        SELECT COUNT(*) 
+        FROM convenios 
+        WHERE nit_institucion = OLD.nit_institucion
+    )
     WHERE nit_institucion = OLD.nit_institucion;
 END//
-DELIMITER ;
 
--- Trigger para UPDATE en convenios (si cambia el NIT)
-DELIMITER //
+-- Trigger para UPDATE: Recalcula ambas instituciones si cambia el NIT
 CREATE TRIGGER tr_convenios_after_update
 AFTER UPDATE ON convenios
 FOR EACH ROW
 BEGIN
+    -- Si cambió el NIT de la institución
     IF OLD.nit_institucion <> NEW.nit_institucion THEN
-        -- Decrementar en la institución anterior
+        -- Recalcular la institución anterior
         UPDATE instituciones 
-        SET cant_convenios = cant_convenios - 1
+        SET cant_convenios = (
+            SELECT COUNT(*) 
+            FROM convenios 
+            WHERE nit_institucion = OLD.nit_institucion
+        )
         WHERE nit_institucion = OLD.nit_institucion;
         
-        -- Incrementar en la nueva institución
+        -- Recalcular la nueva institución
         UPDATE instituciones 
-        SET cant_convenios = cant_convenios + 1
+        SET cant_convenios = (
+            SELECT COUNT(*) 
+            FROM convenios 
+            WHERE nit_institucion = NEW.nit_institucion
+        )
         WHERE nit_institucion = NEW.nit_institucion;
     END IF;
 END//
+
 DELIMITER ;
