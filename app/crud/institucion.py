@@ -77,7 +77,7 @@ def institucion_update(db: Session, nit_institucion:str, update_institucion: Edi
         set_clause = ", ".join([f"{key} = :{key}" for key in fields])
         fields["nit_institucion"] = nit_institucion
         
-        query = text(f"UPDATE institucion SET {set_clause} WHERE nit_institucion = :nit_institucion")
+        query = text(f"UPDATE instituciones SET {set_clause} WHERE nit_institucion = :nit_institucion")
         db.execute(query, fields)
         db.commit()
         return True
