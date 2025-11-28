@@ -128,7 +128,7 @@ CREATE TABLE convenios (
     nit_institucion VARCHAR(20),
     num_proceso VARCHAR(50),
     nombre_institucion VARCHAR(100),
-    estado_convenio VARCHAR(20),
+    estado_convenio VARCHAR(50),
     objetivo_convenio TEXT,
     tipo_proceso VARCHAR(50),
     fecha_firma DATE,
