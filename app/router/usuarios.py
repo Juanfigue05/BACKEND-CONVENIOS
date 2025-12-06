@@ -10,6 +10,18 @@ from app.crud import usuarios as crud_users
 
 router = APIRouter()
 
+@router.post("/registro-publico", status_code=status.HTTP_201_CREATED)
+def registro_publico(user: CrearUsuario, db: Session = Depends(get_db)):
+    """Endpoint PÚBLICO para que nuevos usuarios se registren SIN autenticación"""
+    try:
+        crear = crud_users.create_user(db, user)
+        if crear:
+            return {"message": "Usuario creado correctamente", "status": 201}
+        else:
+            raise HTTPException(status_code=400, detail="El usuario no pudo ser creado correctamente")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/registrar", status_code=status.HTTP_201_CREATED)
 def create_user(
     user: CrearUsuario, 

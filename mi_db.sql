@@ -227,7 +227,7 @@ CREATE TRIGGER tr_convenios_after_insert
 AFTER INSERT ON convenios
 FOR EACH ROW
 BEGIN
-    UPDATE instituciones 
+    UPDATE instituciones --- colocarle cant_convenios+=1
     SET cant_convenios = (
         SELECT COUNT(*) 
         FROM convenios 
