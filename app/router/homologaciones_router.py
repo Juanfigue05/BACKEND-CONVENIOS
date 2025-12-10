@@ -25,7 +25,24 @@ def create_institucion(homologacion: HomologacionBase, db: Session = Depends(get
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener-por-id", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+@router.get("/obtener-todas-homologaciones/", status_code=status.HTTP_200_OK, response_model=[RetornoHomologacion])
+def get_all_homologaciones(
+    db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
+    try:
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+        
+        homologaciones = crud_homologacion.get_all_homologaciones(db)
+        if homologaciones is None:
+            raise HTTPException(status_code=404, detail="Homologaciones no encontrados")
+        return homologaciones
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/obtener-por-id/{id_homologacion}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
 def get_by_id(id_homologacion: int, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
@@ -40,30 +57,30 @@ def get_by_id(id_homologacion: int, db: Session = Depends(get_db),
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener-por-nivel-programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
-def get_by_mivel_programa(nivel_program:str, db: Session = Depends(get_db),
+@router.get("/obtener-por-nivel-programa/{nivel_programa}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+def get_by_nivel_programa(nivel_programa:str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
         if user_token.id_rol != 1:
             raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
         
-        niv_prog = crud_homologacion.obtener_homologacion_by_nivel_programa(db, nivel_program)
+        niv_prog = crud_homologacion.obtener_homologacion_by_nivel_programa(db, nivel_programa)
         if niv_prog is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="homologacion no encontrada")
         return niv_prog
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener-por-nombre-programa", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
-def get_by_nombre_programa_sena(nomb_program_sena:str, db: Session = Depends(get_db),
+@router.get("/obtener-por-nombre-programa/{nombre_programa_sena}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+def get_by_nombre_programa_sena(nombre_programa_sena:str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
         if user_token.id_rol != 1:
             raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
         
-        nom_pro_sena = crud_homologacion.obtener_homologacion_by_nombre_programa_sena(db, nomb_program_sena)
+        nom_pro_sena = crud_homologacion.obtener_homologacion_by_nombre_programa_sena(db, nombre_programa_sena)
         if nom_pro_sena is None:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="homologacion no encontrada")
         return nom_pro_sena

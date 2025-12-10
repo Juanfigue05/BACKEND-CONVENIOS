@@ -88,8 +88,8 @@ def get_all_user(db: Session):
         return result
 
     except SQLAlchemyError as e:
-        logger.error(f"Error al bucar usuario por id: {e}")
-        raise Exception("Error de base de datos al buscar el usuario")
+        logger.error(f"Error al buscar usuarios: {e}")
+        raise Exception("Error de base de datos al buscar los usuarios")
 
 def update_user(db: Session, user_id: int, user_update: EditarUsuario) -> bool:
     try:

@@ -29,6 +29,24 @@ def crear_Homologacion(db: Session, homologacion: HomologacionBase) -> Optional[
         logger.error(f"Error al crear la homologacion :{e}")
         raise Exception("Error de base de datos al crear una homologacion")
 
+def get_all_homologaciones(db: Session):
+    try:
+        query = text("""
+            SELECT homologacion.id_homologacion, homologacion.nit_institucion_destino,
+            homologacion.nombre_programa_sena, homologacion.cod_programa_sena, homologacion.version_programa, homologacion.titulo, homologacion.programa_ies, homologacion.nivel_programa,
+            homologacion.snies, homologacion.creditos_homologados, homologacion.creditos_totales, homologacion.creditos_pendientes, homologacion.modalidad, homologacion.semestres, homologacion.regional, homologacion.enlace
+            FROM homologacion
+            INNER JOIN instituciones ON homologacion.nit_institucion_destino = instituciones.nit_institucion
+        """)
+
+        result = db.execute(query).mappings().all()
+        return result
+
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar homologaciones: {e}")
+        raise Exception("Error de base de datos al buscar las homologaciones")
+
+
 def obtener_homologacion_by_id(db: Session, id_homologacion:int):
     try:
         query = text("""
