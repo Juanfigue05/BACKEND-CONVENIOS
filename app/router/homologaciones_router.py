@@ -6,6 +6,7 @@ from app.router.dependencies import get_current_user
 from sqlalchemy.exc import SQLAlchemyError
 from core.database import get_db
 from app.crud import homologaciones_crud as crud_homologacion
+from typing import List
 
 router = APIRouter()
 
@@ -25,7 +26,7 @@ def create_institucion(homologacion: HomologacionBase, db: Session = Depends(get
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener-todas-homologaciones/", status_code=status.HTTP_200_OK, response_model=[RetornoHomologacion])
+@router.get("/obtener-todas-homologaciones/", status_code=status.HTTP_200_OK, response_model=List[RetornoHomologacion])
 def get_all_homologaciones(
     db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
