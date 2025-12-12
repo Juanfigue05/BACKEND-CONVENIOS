@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.schemas.homologaciones_schema import HomologacionBase, RetornoHomologacion, EditarHomologacion
+from app.schemas.homologaciones_schema import CrearHomologacion, RetornoHomologacion, EditarHomologacion
 from sqlalchemy.orm import Session
 from app.schemas.usuarios import RetornoUsuario
 from app.router.dependencies import get_current_user
@@ -11,7 +11,7 @@ from typing import List
 router = APIRouter()
 
 @router.post("/registrar", status_code=status.HTTP_201_CREATED)
-def create_institucion(homologacion: HomologacionBase, db: Session = Depends(get_db),
+def create_homologacion(homologacion: CrearHomologacion, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
@@ -20,7 +20,7 @@ def create_institucion(homologacion: HomologacionBase, db: Session = Depends(get
         
         crear = crud_homologacion.crear_Homologacion(db, homologacion)
         if crear:
-            return{"message": "homologacion creado correctamente"}
+            return{"message": "homologacion creada correctamente"}
         else:
             return {"message": "La homologacion no puede ser creada correctamente"}
     except Exception as e:
@@ -44,7 +44,7 @@ def get_all_homologaciones(
 
 
 @router.get("/obtener-por-id/{id_homologacion}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
-def get_by_id(id_homologacion: int, db: Session = Depends(get_db),
+def get_homologaciones_by_id(id_homologacion: int, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
@@ -89,7 +89,7 @@ def get_by_nombre_programa_sena(nombre_programa_sena:str, db: Session = Depends(
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.put("/editar/{id_homologacion}")
-def update_convenios(id_homologacion: int, homologacion: EditarHomologacion, db: Session = Depends(get_db),
+def update_homologacion(id_homologacion: int, homologacion: EditarHomologacion, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:

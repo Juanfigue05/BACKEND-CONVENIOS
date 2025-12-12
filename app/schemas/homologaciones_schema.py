@@ -4,7 +4,6 @@ from pydantic import BaseModel,Field
 from datetime import datetime
 
 class HomologacionBase(BaseModel):
-    id_homologacion: int
     nit_institucion_destino: str = Field(max_length=20)
     nombre_programa_sena: str = Field(max_length=100)
     cod_programa_sena: str = Field(max_length=50)
@@ -20,7 +19,7 @@ class HomologacionBase(BaseModel):
     semestres: str = Field(max_length=5)
     regional: str = Field(max_length=20)
     enlace: str = Field(max_length=100)
-
+    
 class CrearHomologacion(HomologacionBase):
     pass
 
@@ -42,4 +41,4 @@ class EditarHomologacion(BaseModel):
     enlace: Optional[str] = None
 
 class RetornoHomologacion(HomologacionBase):
-    id_convenio: int
+    id_homologacion: int
