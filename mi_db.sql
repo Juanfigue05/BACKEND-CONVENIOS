@@ -1,10 +1,3 @@
--- ============================================================
--- BASE DE DATOS: railway
--- DESCRIPCIÓN: Sistema de gestión de convenios, instituciones y homologaciones
--- AUTOR: Sistema de Gestión SENA
--- FECHA: 2024
--- ============================================================
-
 -- Eliminar base de datos si existe y crearla
 DROP DATABASE IF EXISTS railway;
 CREATE DATABASE railway CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -82,25 +75,25 @@ CREATE TABLE convenios (
     tipo_convenio VARCHAR(50),
     num_convenio VARCHAR(50) NOT NULL,
     nit_institucion VARCHAR(20) NOT NULL,
-    num_proceso VARCHAR(50),
+    num_proceso VARCHAR(50) DEFAULT NULL,
     nombre_institucion VARCHAR(100),
     estado_convenio VARCHAR(50),
     objetivo_convenio VARCHAR(500) DEFAULT NULL,
     tipo_proceso VARCHAR(50),
-    fecha_firma DATE,
-    fecha_inicio DATE,
+    fecha_firma VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    fecha_inicio VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
     duracion_convenio VARCHAR(20),
-    plazo_ejecucion DATE,
-    prorroga DATE,
-    plazo_prorroga DATE,
+    plazo_ejecucion VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    prorroga VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    plazo_prorroga VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
     duracion_total VARCHAR(20),
-    fecha_publicacion_proceso DATE,
-    enlace_secop VARCHAR(100),
-    supervisor VARCHAR(80),
+    fecha_publicacion_proceso VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    enlace_secop VARCHAR(1500),
+    supervisor TEXT,
     precio_estimado DECIMAL(15,2),
     tipo_convenio_sena VARCHAR(50),
     persona_apoyo_fpi VARCHAR(80),
-    enlace_evidencias VARCHAR(100),
+    enlace_evidencias TEXT,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (nit_institucion) REFERENCES instituciones(nit_institucion) ON DELETE RESTRICT ON UPDATE CASCADE,
