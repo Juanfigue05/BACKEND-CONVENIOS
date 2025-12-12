@@ -80,8 +80,8 @@ async def upload_excel(
 
     # # Asegurar columnas no proporcionadas
     # df["num_convenio"] = "N/A"
-    df["num_proceso"] = "N/A"
-    df["objetivo_convenio"] = "N/A"
+    # df["num_proceso"] = "N/A"
+    # df["objetivo_convenio"] = "N/A"
     df["fecha_firma"] = "0001-01-01"
     # ejemplo 2 de fecha firma: 2023-08-15T00:00:00.000Z
     
