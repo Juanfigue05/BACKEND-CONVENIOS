@@ -43,14 +43,14 @@ async def get_by_name(nom_municipio:str, db: Session = Depends(get_db),
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/obtener-todos", status_code=status.HTTP_200_OK, response_model=List[MunicipioBase])
-async def get_all(nom_municipio:str, db: Session = Depends(get_db),
+async def get_all( db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
         if user_token.id_rol != 1:
             raise HTTPException(status_code=401, detail="No tienes permisos para buscar municipios")
         
-        municipio = crud_municipio.get_municipio_by_name(db, nom_municipio)
+        municipio = crud_municipio.get_municipio_by_name(db)
         if municipio is None:
             raise HTTPException(status_code=404, detail="Municipio no encontrado")
         return municipio
