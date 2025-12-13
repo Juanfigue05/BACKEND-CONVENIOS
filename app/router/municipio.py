@@ -35,7 +35,7 @@ async def get_by_name(nom_municipio:str, db: Session = Depends(get_db),
         if user_token.id_rol != 1:
             raise HTTPException(status_code=401, detail="No tienes permisos para buscar municipios")
         
-        municipio = crud_municipio.get_municipios(db, nom_municipio)
+        municipio = crud_municipio.get_municipio_by_name(db, nom_municipio)
         if municipio is None:
             raise HTTPException(status_code=404, detail="Municipio no encontrado")
         return municipio
