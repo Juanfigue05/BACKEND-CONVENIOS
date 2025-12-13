@@ -14,3 +14,4 @@ class EditarInstitucion(BaseModel):
     nit_institucion: Optional[str]
     nombre_institucion: Optional[str] = Field(default=None, min_length=3, max_length=100)
     direccion: Optional[str] = Field(default=None, min_length=3, max_length=100)
+    id_municipio: Optional[int] = None
