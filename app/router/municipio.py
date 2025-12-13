@@ -42,8 +42,8 @@ async def get_by_name(nom_municipio:str, db: Session = Depends(get_db),
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/obtener-todos", status_code=status.HTTP_200_OK, response_model=List[MunicipioBase])
-async def get_all( db: Session = Depends(get_db),
+@router.get("/obtener-todos", status_code=status.HTTP_200_OK)
+def get_all( db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
