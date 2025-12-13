@@ -16,7 +16,7 @@ def create_homologacion(homologacion: CrearHomologacion, db: Session = Depends(g
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         crear = crud_homologacion.crear_Homologacion(db, homologacion)
         if crear:
@@ -33,7 +33,7 @@ def get_all_homologaciones(
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         homologaciones = crud_homologacion.get_all_homologaciones(db)
         if homologaciones is None:
@@ -49,7 +49,7 @@ def get_homologaciones_by_id(id_homologacion: int, db: Session = Depends(get_db)
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         homologacion = crud_homologacion.obtener_homologacion_by_id(db, id_homologacion)
         if homologacion is None:
@@ -64,7 +64,7 @@ def get_by_nivel_programa(nivel_programa:str, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         niv_prog = crud_homologacion.obtener_homologacion_by_nivel_programa(db, nivel_programa)
         if niv_prog is None:
@@ -79,7 +79,7 @@ def get_by_nombre_programa_sena(nombre_programa_sena:str, db: Session = Depends(
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         nom_pro_sena = crud_homologacion.obtener_homologacion_by_nombre_programa_sena(db, nombre_programa_sena)
         if nom_pro_sena is None:
@@ -94,7 +94,7 @@ def update_homologacion(id_homologacion: int, homologacion: EditarHomologacion, 
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         success = crud_homologacion.homologacion_update(db, id_homologacion, homologacion)
         if not success:
@@ -109,7 +109,7 @@ def delete_by_id(id_homologacion:int, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         user = crud_homologacion.eliminar_homologacion(db, id_homologacion)
         if user:

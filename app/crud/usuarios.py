@@ -52,7 +52,7 @@ def get_user_by_id(db: Session, id_usuario:int):
         return result
     
     except SQLAlchemyError as e:
-        logger.error(f"Error al bucar usuario por id: {e}")
+        logger.error(f"Error al buscar usuario por id: {e}")
         raise Exception("Error de base de datos al buscar el usuario")
 
 
@@ -64,14 +64,14 @@ def get_user_by_email(db: Session, un_correo:str):
                    usuario.estado, rol.nombre_rol
             FROM usuario
             INNER JOIN rol ON usuario.id_rol = rol.id_rol
-            WHERE usuario.correo = :email
+            WHERE usuario.correo like :email
         """)
 
         result = db.execute(query, {"email": un_correo}).mappings().first()
         return result
     
     except SQLAlchemyError as e:
-        logger.error(f"Error al bucar usuario por email: {e}")
+        logger.error(f"Error al buscar usuario por email: {e}")
         raise Exception("Error de base de datos al buscar el usuario por correo")
     
 def get_all_user(db: Session):

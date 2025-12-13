@@ -4,6 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
 import logging
+from typing import List
 
 from app.schemas.municipio import MunicipioBase
 
@@ -29,6 +30,21 @@ def create_municipio(db: Session, municipio: MunicipioBase) -> bool:
         logger.error(f"Error al crear el municipio: {e}")
         raise Exception("Error de base de datos al crear municipio")
     
+def get_municipios(db: Session)-> List[MunicipioBase]:
+    try:
+        query = text("""
+            SELECT id_municipio, nom_municipio
+            FROM municipio
+            WHERE id_municipio = :id_municipio
+        """)
+
+        result = db.execute(query).mappings().first()
+        return result
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Error al bucar municipio por id: {e}")
+        raise Exception("Error de base de datos al buscar los municipios")
+
 def get_municipio_by_id(db: Session, id_municipio:int):
     try:
         query = text("""

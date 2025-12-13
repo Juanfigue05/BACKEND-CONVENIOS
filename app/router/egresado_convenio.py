@@ -15,7 +15,7 @@ def create_egresadoConvenio(egresado_convenio: Egresado_convenioBase, db: Sessio
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para crear esta conexion")
         
         crear = crud_egresado_convenio.create_egresado_convenio(db, egresado_convenio)
         if crear: 

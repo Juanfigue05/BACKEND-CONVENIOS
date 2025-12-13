@@ -16,7 +16,7 @@ def create_institucion(institucion: InstitucionBase, db: Session = Depends(get_d
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         crear = crud_instituciones.create_institucion(db, institucion)
         if crear:
@@ -32,7 +32,7 @@ def get_by_nit(nit_institucion: str, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.get_institucion_by_nit(db, nit_institucion)
         if instituciones is None or len(instituciones) == 0:
@@ -47,7 +47,7 @@ async def get_by_name(nombre_institucion: str, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para buscar la institución")
         
         institucion = crud_instituciones.get_institucion_by_name(db, nombre_institucion)
         if institucion is None or len(institucion) == 0:
@@ -62,7 +62,7 @@ def get_by_direccion(direccion: str, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.get_institucion_by_direccion(db, direccion)
         if instituciones is None or len(instituciones) == 0:
@@ -77,7 +77,7 @@ def get_by_municipio(id_municipio: int, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.get_institucion_by_municipio(db, id_municipio)
         if instituciones is None or len(instituciones) == 0:
@@ -92,7 +92,7 @@ def get_by_convenios(cant_convenios: int, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.get_institucion_by_convenios(db, cant_convenios)
         if instituciones is None or len(instituciones) == 0:
@@ -110,7 +110,7 @@ def get_by_rango_convenios(
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         if min_convenios > max_convenios:
             raise HTTPException(status_code=400, detail="El mínimo no puede ser mayor que el máximo")
@@ -128,7 +128,7 @@ def get_all_instituciones(db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.get_all_instituciones(db)
         if instituciones is None or len(instituciones) == 0:
@@ -150,7 +150,7 @@ def busqueda_avanzada(
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         instituciones = crud_instituciones.busqueda_avanzada_instituciones(
             db, nit_institucion, nombre_institucion, direccion, 
@@ -168,7 +168,7 @@ def update_institucion(nit_institucion: str, institucion: EditarInstitucion, db:
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         success = crud_instituciones.institucion_update(db, nit_institucion, institucion)
         if not success:
@@ -183,7 +183,7 @@ def delete_institucion(nit_institucion: str, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos")
         
         institucion = crud_instituciones.institucion_delete(db, nit_institucion)
         if institucion:

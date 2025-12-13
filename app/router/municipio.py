@@ -16,7 +16,7 @@ def create_municipio(municipio: MunicipioBase, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para registrar municipio")
         
         crear = crud_municipio.create_municipio(db, municipio)
         if crear:
@@ -25,14 +25,30 @@ def create_municipio(municipio: MunicipioBase, db: Session = Depends(get_db),
             return {"message": "El municipio no puede ser creado correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-   
+
+  
 @router.get("/obtener-por-nombre", status_code=status.HTTP_200_OK, response_model=List[MunicipioBase])
 async def get_by_name(nom_municipio:str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para buscar municipios")
+        
+        municipio = crud_municipio.get_municipios(db, nom_municipio)
+        if municipio is None:
+            raise HTTPException(status_code=404, detail="Municipio no encontrado")
+        return municipio
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/obtener-todos", status_code=status.HTTP_200_OK, response_model=List[MunicipioBase])
+async def get_all(nom_municipio:str, db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
+    try:
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para buscar municipios")
         
         municipio = crud_municipio.get_municipio_by_name(db, nom_municipio)
         if municipio is None:
@@ -47,7 +63,7 @@ def get_by_id(id_municipio:int, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para buscar municipios")
         
         municipio = crud_municipio.get_municipio_by_id(db, id_municipio)
         if municipio is None:
@@ -63,7 +79,7 @@ def update_municipio(id_municipio: int, municipio: MunicipioBase, db: Session = 
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para editar municipios")
         
         success = crud_municipio.update_municipio(db, id_municipio, municipio)
         if not success:
@@ -78,7 +94,7 @@ def delete_municipio(id_municipio: int, db: Session = Depends(get_db),
 ):
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para borrar municipios")
         
         municipio = crud_municipio.municipio_delete(db, id_municipio)
         if municipio:

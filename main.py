@@ -8,7 +8,6 @@ from app.router import auth
 from app.router import institucion
 from app.router import homologaciones_router as homologaciones
 from app.router import municipio
-from app.router import homologaciones_router as homologaciones
 from app.router import estadistica_router as estadisticas
 
 app = FastAPI()

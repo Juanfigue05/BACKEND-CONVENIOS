@@ -8,7 +8,7 @@ load_dotenv()
 class Settings(BaseSettings):
     PROJECT_NAME: str = os.getenv("PROJECT_NAME", "No Sabemos")
     PROJECT_VERSION: str = "0.0.1"
-    PROJECT_DESCRIPTION: str = "Analsis de datos para Regional Risaralda SENA"
+    PROJECT_DESCRIPTION: str = "Analisis de datos para Regional Risaralda SENA"
 
     # Configuración de la base de datos
     DB_HOST: str = os.getenv("DB_HOST", "localhost")

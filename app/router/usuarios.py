@@ -50,7 +50,7 @@ def get_by_id(id_usuario:int, db:
     
     try:
         if user_token.id_rol != 1:
-            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+            raise HTTPException(status_code=401, detail="No tienes permisos para buscar usuario")
         
         user = crud_users.get_user_by_id(db, id_usuario)
         if user is None:
