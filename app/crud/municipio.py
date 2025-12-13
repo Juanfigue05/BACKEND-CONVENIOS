@@ -35,10 +35,9 @@ def get_municipios(db: Session)-> List[MunicipioBase]:
         query = text("""
             SELECT id_municipio, nom_municipio
             FROM municipio
-            WHERE id_municipio = :id_municipio
         """)
 
-        result = db.execute(query).mappings().first()
+        result = db.execute(query).mappings().all()
         return result
     
     except SQLAlchemyError as e:
