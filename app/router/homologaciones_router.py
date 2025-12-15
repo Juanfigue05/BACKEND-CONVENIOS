@@ -43,7 +43,7 @@ def get_all_homologaciones(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/obtener-por-id/{id_homologacion}", status_code=status.HTTP_200_OK, response_model=List[RetornoHomologacion])
+@router.get("/obtener-por-id/{id_homologacion}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
 def get_homologaciones_by_id(id_homologacion: int, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
@@ -73,7 +73,7 @@ def get_by_nivel_programa(nivel_programa:str, db: Session = Depends(get_db),
     except SQLAlchemyError as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.get("/obtener-por-nombre-programa/{nombre_programa_sena}", status_code=status.HTTP_200_OK, response_model=RetornoHomologacion)
+@router.get("/obtener-por-nombre-programa/{nombre_programa_sena}", status_code=status.HTTP_200_OK, response_model=List[RetornoHomologacion])
 def get_by_nombre_programa_sena(nombre_programa_sena:str, db: Session = Depends(get_db),
     user_token: RetornoUsuario = Depends(get_current_user)
 ):
