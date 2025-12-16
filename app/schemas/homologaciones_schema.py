@@ -10,7 +10,7 @@ class HomologacionBase(BaseModel):
     version_programa: int
     titulo: str = Field(max_length=100)
     programa_ies: str = Field(max_length=50)
-    nivel_programa: str = Field(max_length=10)
+    nivel_programa: str = Field(max_length=50)
     snies :int 
     creditos_homologados: int
     creditos_totales: int
