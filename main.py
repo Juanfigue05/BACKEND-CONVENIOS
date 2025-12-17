@@ -9,6 +9,7 @@ from app.router import institucion
 from app.router import homologaciones_router as homologaciones
 from app.router import municipio
 from app.router import estadistica_router as estadisticas
+from app.router import meta
 
 app = FastAPI()
 
@@ -21,6 +22,8 @@ app.include_router(institucion.router, prefix="/institucion", tags=["Servicios d
 app.include_router(municipio.router, prefix="/municipio", tags=["Servicios de municipios"])
 app.include_router(homologaciones.router, prefix="/homologaciones", tags=["Servicios de homologaciones"]) 
 app.include_router(estadisticas.router, prefix="/estadisticas", tags=["Estadisticas secundarias"]) 
+app.include_router(meta.router, prefix="/meta", tags=["Metadatos"])
+
 
 # Configuración de CORS para permitir todas las solicitudes desde cualquier origen
 app.add_middleware(

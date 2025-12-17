@@ -76,20 +76,20 @@ CREATE TABLE convenios (
     num_convenio VARCHAR(50) NOT NULL,
     nit_institucion VARCHAR(20) NOT NULL,
     num_proceso VARCHAR(50) DEFAULT NULL,
-    nombre_institucion VARCHAR(100),
+    nombre_institucion VARCHAR(120),
     estado_convenio VARCHAR(50),
-    objetivo_convenio VARCHAR(500) DEFAULT NULL,
+    objetivo_convenio VARCHAR(1000) DEFAULT NULL,
     tipo_proceso VARCHAR(50),
-    fecha_firma VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
-    fecha_inicio VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    fecha_firma VARCHAR(50),   
+    fecha_inicio VARCHAR(50),   
     duracion_convenio VARCHAR(20),
-    plazo_ejecucion VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
-    prorroga VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
-    plazo_prorroga VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    plazo_ejecucion VARCHAR(50),   
+    prorroga VARCHAR(50),   
+    plazo_prorroga VARCHAR(50),   
     duracion_total VARCHAR(20),
-    fecha_publicacion_proceso VARCHAR(50),   --DISCUTIR SOBRE SI CAMBIAR A VARCHAR O SEGUIR EN DATE
+    fecha_publicacion_proceso VARCHAR(50),   
     enlace_secop VARCHAR(1500),
-    supervisor TEXT,
+    supervisor VARCHAR(400),
     precio_estimado DECIMAL(15,2),
     tipo_convenio_sena VARCHAR(50),
     persona_apoyo_fpi VARCHAR(80),
@@ -100,7 +100,6 @@ CREATE TABLE convenios (
     UNIQUE KEY uk_convenio_unico (num_convenio, nit_institucion),
     INDEX idx_estado_convenio (estado_convenio),
     INDEX idx_tipo_convenio_sena (tipo_convenio_sena),
-    INDEX idx_supervisor (supervisor),
     INDEX idx_persona_apoyo (persona_apoyo_fpi),
     INDEX idx_fecha_firma (fecha_firma),
     INDEX idx_nit_institucion (nit_institucion)
@@ -119,10 +118,10 @@ CREATE TABLE homologacion (
     titulo VARCHAR(150),
     programa_ies VARCHAR(80),
     nivel_programa VARCHAR(50),
-    snies SMALLINT,
-    creditos_homologados TINYINT,
-    creditos_totales TINYINT,
-    creditos_pendientes TINYINT,
+    snies INT,
+    creditos_homologados INT,
+    creditos_totales INT,
+    creditos_pendientes INT,
     modalidad VARCHAR(20),
     semestres VARCHAR(5),
     regional VARCHAR(30),
@@ -144,7 +143,7 @@ CREATE TABLE homologacion (
 CREATE TABLE estadistica_categoria (
     id_estadistica INT AUTO_INCREMENT PRIMARY KEY,
     categoria VARCHAR(50) NOT NULL COMMENT 'Categoría de la estadística',
-    nombre VARCHAR(100) NOT NULL COMMENT 'Nombre del elemento estadístico',
+    nombre VARCHAR(400) NOT NULL COMMENT 'Nombre del elemento estadístico',
     subcategoria VARCHAR(50) DEFAULT NULL COMMENT 'Subcategoría opcional para filtros adicionales',
     cantidad INT DEFAULT 0 COMMENT 'Contador principal de registros',
     suma_total DECIMAL(15,2) DEFAULT 0 COMMENT 'Suma acumulada de montos o valores numéricos',
@@ -1191,6 +1190,6 @@ INSERT INTO estadistica_categoria (categoria, nombre, cantidad) VALUES
 -- Niveles de programa
 ('nivel_programa', 'Tecnólogo', 0),
 ('nivel_programa', 'Técnico', 0),
-('nivel_programa', 'Especialización', 0),
+('nivel_programa', 'Especialización', 0);
 
 

@@ -12,7 +12,18 @@ logger = logging.getLogger(__name__)
 def create_institucion(db: Session, institucion: InstitucionBase) -> Optional[bool]:
     try:
         dataInstitucion = institucion.model_dump()
-        
+        # Log the payload for debugging
+        try:
+            logger.info("create_institucion data: %s", dataInstitucion)
+        except Exception:
+            logger.info("create_institucion data: <unserializable>")
+        # Ensure id_municipio exists and is string (DB expects VARCHAR)
+        if not dataInstitucion.get("id_municipio"):
+            logger.warning("create_institucion: id_municipio is missing or empty")
+        else:
+            # cast to str to be safe
+            dataInstitucion["id_municipio"] = str(dataInstitucion["id_municipio"]) if dataInstitucion.get("id_municipio") is not None else dataInstitucion.get("id_municipio")
+
         query = text("""
             INSERT INTO instituciones(nit_institucion, nombre_institucion,
             direccion, id_municipio, cant_convenios)
@@ -234,6 +245,15 @@ def institucion_update(db: Session, nit_institucion: str, update_institucion: Ed
         fields = update_institucion.model_dump(exclude_unset=True)
         if not fields:
             return False
+        # Log incoming update fields
+        try:
+            logger.info("institucion_update fields: %s", fields)
+        except Exception:
+            logger.info("institucion_update fields: <unserializable>")
+        # ensure id_municipio is string if present
+        if "id_municipio" in fields and fields["id_municipio"] is not None:
+            fields["id_municipio"] = str(fields["id_municipio"])
+
         set_clause = ", ".join([f"{key} = :{key}" for key in fields])
         fields["nit_institucion"] = nit_institucion
         

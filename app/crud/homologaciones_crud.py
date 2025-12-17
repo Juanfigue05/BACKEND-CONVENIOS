@@ -12,6 +12,19 @@ logger = logging.getLogger(__name__)
 def crear_Homologacion(db: Session, homologacion: CrearHomologacion) -> Optional[bool]:
     try:
         dataHomologacion = homologacion.model_dump()
+        # Normalizar: strings vacías o None -> 'NA', ints None -> 0
+        for key, val in list(dataHomologacion.items()):
+            if isinstance(val, str):
+                dataHomologacion[key] = val.strip() if val and val.strip() != '' else 'NA'
+            elif isinstance(val, int) or isinstance(val, float):
+                dataHomologacion[key] = val if val is not None else 0
+            elif val is None:
+                # Si es None y no se identificó el tipo, aplicar heurística
+                if key in ['version_programa','snies','creditos_homologados','creditos_totales','creditos_pendientes']:
+                    dataHomologacion[key] = 0
+                else:
+                    dataHomologacion[key] = 'NA'
+
         query = text("""
             INSERT INTO homologacion(nit_institucion_destino,
             nombre_programa_sena, cod_programa_sena, version_programa, titulo, programa_ies, nivel_programa,
@@ -105,7 +118,17 @@ def homologacion_update(db: Session, id_homologacion: int, homologacion_update: 
         fields = homologacion_update.model_dump(exclude_unset=True)
         if not fields:
             return False
-        
+
+        # Normalizar valores enviados: '' o None -> 'NA' para strings; None -> 0 para ints
+        for key, val in list(fields.items()):
+            if isinstance(val, str):
+                fields[key] = val.strip() if val and val.strip() != '' else 'NA'
+            elif val is None:
+                if key in ['version_programa','snies','creditos_homologados','creditos_totales','creditos_pendientes']:
+                    fields[key] = 0
+                else:
+                    fields[key] = 'NA'
+
         set_clause = ", ".join([f"{key} = :{key}" for key in fields])
         fields["id_homologacion"] = id_homologacion
 

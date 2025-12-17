@@ -1,4 +1,5 @@
 from typing import List, Optional
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from app.schemas.institucion import InstitucionBase, RetornarInstitucion, EditarInstitucion
 from app.schemas.usuarios import RetornoUsuario
@@ -9,6 +10,7 @@ from core.database import get_db
 from app.crud import institucion as crud_instituciones
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/registrar", status_code=status.HTTP_201_CREATED)
 def create_institucion(institucion: InstitucionBase, db: Session = Depends(get_db),
@@ -17,7 +19,12 @@ def create_institucion(institucion: InstitucionBase, db: Session = Depends(get_d
     try:
         if user_token.id_rol != 1:
             raise HTTPException(status_code=401, detail="No tienes permisos")
-        
+        # Log incoming payload for debugging (temporary)
+        try:
+            logger.info(f"Create Institucion payload: %s", institucion.model_dump())
+        except Exception:
+            logger.info("Create Institucion payload: <unserializable>")
+
         crear = crud_instituciones.create_institucion(db, institucion)
         if crear:
             return{"message": "Institución creada correctamente"}
